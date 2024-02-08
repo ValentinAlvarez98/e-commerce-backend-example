@@ -1,0 +1,63 @@
+<h1>Actualizar Usuario</h1>
+
+<input type="text" id="userId" placeholder="Ingresa el ID del usuario" required>
+
+<form id="updateUserForm">
+    <input type="text" name="first_name" placeholder="Nuevo Nombre" required>
+    <input type="text" name="last_name" placeholder="Nuevo Apellido" required>
+    <input type="number" name="age" placeholder="Nueva Edad" required>
+    <fieldset>
+        <legend>Agregar una Nueva Dirección</legend>
+        <input type="text" name="street" placeholder="Calle" required>
+        <input type="text" name="number" placeholder="Número">
+        <input type="text" name="city" placeholder="Ciudad" required>
+        <input type="text" name="state" placeholder="Estado" required>
+        <input type="text" name="location" placeholder="Ubicación" required>
+        <input type="text" name="zip" placeholder="Código Postal" required>
+    </fieldset>
+    <button type="submit">Actualizar Usuario</button>
+</form>
+
+<div id="updateMessage"></div>
+
+<div id="buttonBackContainer">
+    <button onclick="window.location.href='/home'">Volver a la Página Principal</button>
+</div>
+
+<script>
+    document.getElementById('updateUserForm').onsubmit = function(event) {
+        event.preventDefault();
+        const userId = document.getElementById('userId').value;
+        const formData = new FormData(event.target);
+        const userData = Object.fromEntries(formData);
+        userData.address = {
+            street: userData.street,
+            number: userData.number,
+            city: userData.city,
+            state: userData.state,
+            location: userData.location,
+            zip: userData.zip
+        };
+
+        fetch(`/api/users/updateOne/${userId}`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(userData),
+        })
+        .then(response => response.json())
+        .then(data => {
+            if(data.status === 'success') {
+                document.getElementById('updateMessage').innerHTML = 'Usuario actualizado con éxito.';
+            } else {
+                document.getElementById('updateMessage').innerHTML = `Error al actualizar usuario: ${data.message}`;
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            document.getElementById('updateMessage').innerHTML = 'Error al procesar la solicitud.';
+        });
+    };
+</script>
+
