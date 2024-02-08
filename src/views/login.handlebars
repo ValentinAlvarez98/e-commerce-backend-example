@@ -1,0 +1,41 @@
+<h1>Iniciar Sesión</h1>
+
+<form id="loginForm">
+    <input type="email" name="email" placeholder="Correo electrónico" required>
+    <input type="password" name="password" placeholder="Contraseña" required>
+    <button type="submit">Iniciar Sesión</button>
+</form>
+
+<div id="loginMessage"></div>
+
+<div id="buttonBackContainer">
+    <button onclick="window.location.href='/home'">Volver a la Página Principal</button>
+</div>
+
+<script>
+document.getElementById('loginForm').onsubmit = function(event) {
+    event.preventDefault();
+    const formData = new FormData(event.target);
+    const loginData = Object.fromEntries(formData);
+
+    fetch('/api/users/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(loginData),
+    })
+    .then(response => response.json())
+    .then(data => {
+        if(data.status === 'success') {
+            console.log(data)
+            document.getElementById('loginMessage').innerHTML = `<p>Inicio de sesión exitoso del usuario ${data.payload._id}. Bienvenido, ${data.payload.first_name}.</p>`;
+        } else {
+            document.getElementById('loginMessage').innerHTML = `Error al iniciar sesión: ${data.message}`;
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        document.getElementById('loginMessage').innerHTML = 'Error al procesar la solicitud.';
+    });
+};
+</script>
+

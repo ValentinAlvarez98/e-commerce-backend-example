@@ -40,4 +40,22 @@ viewsRouter.get("/deleteOneUser", (req, res) => {
 
 })
 
+viewsRouter.get("/deleteInactiveUsers", (req, res) => {
+
+      res.render('deleteInactiveUsers')
+
+})
+
+viewsRouter.get("/login", (req, res) => {
+
+      res.render('login')
+
+})
+
+viewsRouter.get("/logout", (req, res) => {
+
+      res.render('logout')
+
+})
+
 export default viewsRouter;

@@ -1,0 +1,35 @@
+<h1>Cerrar Sesión</h1>
+
+<div>
+    <input type="text" id="userId" placeholder="ID del Usuario para Cerrar Sesión" required>
+    <button onclick="logoutUser()">Cerrar Sesión</button>
+</div>
+
+<div id="logoutMessage"></div>
+
+<div id="buttonBackContainer">
+    <button onclick="window.location.href='/home'">Volver a la Página Principal</button>
+</div>
+
+<script>
+function logoutUser() {
+    const userId = document.getElementById('userId').value;
+    if (userId) {
+        fetch(`/api/users/logout/${userId}`, { method: 'GET' })
+        .then(response => response.json())
+        .then(data => {
+            if(data.status === 'success') {
+                  console.log(data)
+                document.getElementById('logoutMessage').innerHTML = `<p>Cierre de sesión exitoso del usuario ${userId}. Nos vemos pronto ${data.payload.first_name} ${data.payload.last_name}.</p>`;
+            } else {
+                document.getElementById('logoutMessage').innerHTML = `Error al cerrar sesión: ${data.message}`;
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            document.getElementById('logoutMessage').innerHTML = 'Error al procesar la solicitud.';
+        });
+    }
+}
+</script>
+

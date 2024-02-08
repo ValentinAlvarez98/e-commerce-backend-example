@@ -1,0 +1,29 @@
+<h1>Eliminar Usuarios Inactivos</h1>
+
+<button onclick="deleteInactiveUsers()">Eliminar Usuarios Inactivos</button>
+
+<div id="deleteMessage"></div>
+
+<div id="buttonBackContainer">
+    <button onclick="window.location.href='/home'">Volver a la Página Principal</button>
+</div>
+
+<script>
+function deleteInactiveUsers() {
+    fetch('/api/users/deleteInactives', { method: 'DELETE' })
+    .then(response => response.json())
+    .then(data => {
+        if(data.status === 'success') {
+            const deletedUsers = data.payload.deletedCount;
+            document.getElementById('deleteMessage').innerHTML = `<p>${deletedUsers} usuarios inactivos fueron eliminados con éxito.</p>`;
+        } else {
+            document.getElementById('deleteMessage').innerHTML = `Error al eliminar usuarios inactivos: ${data.message}`;
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        document.getElementById('deleteMessage').innerHTML = 'Error al procesar la solicitud.';
+    });
+}
+</script>
+
