@@ -34,4 +34,10 @@ viewsRouter.get("/updateOneUser", (req, res) => {
 
 })
 
+viewsRouter.get("/deleteOneUser", (req, res) => {
+
+      res.render('deleteOneUser')
+
+})
+
 export default viewsRouter;
