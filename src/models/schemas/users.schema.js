@@ -47,7 +47,7 @@ const usersSchema = new mongoose.Schema({
                         required: [true, 'Street is required'],
                   },
                   number: {
-                        type: Number,
+                        type: String,
                   },
                   city: {
                         type: String,

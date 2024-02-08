@@ -1,0 +1,58 @@
+<h1>Eliminar Usuario por ID</h1>
+
+<div>
+    <input type="text" id="userIdInput" placeholder="Ingresa el ID del usuario">
+    <button onclick="fetchUser()">Buscar Usuario</button>
+    <button id="deleteUserBtn" style="display:none;" onclick="deleteUser()">Eliminar Usuario</button>
+</div>
+
+<div id="userContainer"></div>
+
+<div id="buttonBackContainer">
+    <button onclick="window.location.href='/home'">Volver a la Página Principal</button>
+</div>
+
+<script>
+    function fetchUser() {
+        const userId = document.getElementById('userIdInput').value;
+        if (userId) {
+            fetch(`/api/users/getOne/${userId}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.status === 'success') {
+                        const user = data.payload;
+                        const userContainer = document.getElementById('userContainer');
+                        userContainer.innerHTML = `<p>Usuario encontrado</p>`; 
+                        document.getElementById('deleteUserBtn').style.display = 'inline';
+                    } else {
+                        document.getElementById('userContainer').innerHTML = '<p>Usuario no encontrado.</p>';
+                        document.getElementById('deleteUserBtn').style.display = 'none';
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    document.getElementById('userContainer').innerHTML = '<p>Error al buscar el usuario.</p>';
+                });
+        }
+    }
+    
+    function deleteUser() {
+        const userId = document.getElementById('userIdInput').value;
+        if (userId) {
+            fetch(`/api/users/deleteOne/${userId}`, { method: 'DELETE' })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.status === 'success') {
+                        document.getElementById('userContainer').innerHTML = '<p>Usuario eliminado con éxito.</p>';
+                    } else {
+                        document.getElementById('userContainer').innerHTML = `<p>Error al eliminar usuario: ${data.message}</p>`;
+                    }
+                    document.getElementById('deleteUserBtn').style.display = 'none';
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    document.getElementById('userContainer').innerHTML = '<p>Error al eliminar el usuario.</p>';
+                });
+        }
+    }
+</script>
