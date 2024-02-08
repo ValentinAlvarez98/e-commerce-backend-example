@@ -15,7 +15,7 @@ function deleteInactiveUsers() {
     .then(data => {
         if(data.status === 'success') {
             const deletedUsers = data.payload.deletedCount;
-            document.getElementById('deleteMessage').innerHTML = `<p>${deletedUsers} usuarios inactivos fueron eliminados con éxito.</p>`;
+            document.getElementById('deleteMessage').innerHTML = `<p>${deletedUsers + 1} usuarios inactivos fueron eliminados con éxito.</p>`;
         } else {
             document.getElementById('deleteMessage').innerHTML = `Error al eliminar usuarios inactivos: ${data.message}`;
         }
