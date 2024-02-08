@@ -1,9 +1,7 @@
 <h1>Lista de Usuarios</h1>
     <div id="usersContainer"></div>
 
-    <div>
-        <button onclick="window.location.href='/home'">Volver a la Página Principal</button>
-    </div>
+    
 
     <script>
         fetch('/api/users/getAll')
@@ -33,6 +31,10 @@
                             <p><strong>Última Desconexión:</strong> ${user.last_connection.last_logout ? new Date(user.last_connection.last_logout).toLocaleString() : 'N/A'}</p>
                             <p><strong>Última Modificación:</strong> ${user.last_connection.last_modification ? new Date(user.last_connection.last_modification).toLocaleString() : 'N/A'}</p>
                               <p><strong>Fecha de Creación:</strong> ${new Date(user.date_created).toLocaleString()}</p>
+
+                            <div>
+                                <button onclick="window.location.href='/home'">Volver a la Página Principal</button>
+                            </div>
                         `;
                         usersContainer.appendChild(userDiv);
                     });
