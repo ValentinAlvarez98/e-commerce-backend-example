@@ -26,6 +26,10 @@ app.use(session({
       saveUninitialized: false,
 }));
 
+app.use((req, res, next) => {
+      res.redirect('/home');
+});
+
 app.listen(PORT, () => {
       console.log(`Server running on port: ${PORT}`);
 });

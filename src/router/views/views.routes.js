@@ -4,7 +4,7 @@ import {
 
 const viewsRouter = Router();
 
-viewsRouter.get("/", (req, res) => {
+viewsRouter.get("/home", (req, res) => {
 
       res.render('home')
 
