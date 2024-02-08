@@ -10,7 +10,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/ValentinAlvarez98/e-commerce-example.git"
+    "url": "git+https://github.com/ValentinAlvarez98/e-commerce-backend-example.git"
   },
   "keywords": [
     "e-commerce",
@@ -19,9 +19,9 @@
   "author": "Valentín Alvarez y Rodrigo Cazard",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/ValentinAlvarez98/e-commerce-example/issues"
+    "url": "https://github.com/ValentinAlvarez98/e-commerce-backend-example/issues"
   },
-  "homepage": "https://github.com/ValentinAlvarez98/e-commerce-example#readme",
+  "homepage": "https://github.com/ValentinAlvarez98/e-commerce-backend-example#readme",
   "dependencies": {
     "bcrypt": "^5.1.1",
     "commander": "^12.0.0",
