@@ -26,16 +26,12 @@ app.use(session({
       saveUninitialized: false,
 }));
 
-app.use((req, res, next) => {
-      res.redirect('/home');
-});
-
-app.listen(PORT, () => {
-      console.log(`Server running on port: ${PORT}`);
-});
-
 app.engine('handlebars', handlebars.engine());
 app.set('view engine', __dirname + '/views');
 app.set('view engine', 'handlebars');
 app.use(express.static(__dirname + '/public'));
 app.use('/', router);
+
+app.listen(PORT, () => {
+      console.log(`Server running on port: ${PORT}`);
+});

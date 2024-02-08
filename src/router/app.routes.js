@@ -29,4 +29,10 @@ router.get("/api/test", (req, res) => {
 
 router.use("/api/users", usersRouter);
 
+router.use("*", (req, res) => {
+
+      res.redirect("/home");
+
+})
+
 export default router;
