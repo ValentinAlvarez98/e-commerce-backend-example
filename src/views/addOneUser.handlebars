@@ -1,0 +1,44 @@
+<h1>Agregar Nuevo Usuario</h1>
+
+<form id="addUserForm">
+    <input type="text" name="first_name" placeholder="Nombre" required>
+    <input type="text" name="last_name" placeholder="Apellido" required>
+    <input type="email" name="email" placeholder="Correo electrónico" required>
+    <input type="number" name="age" placeholder="Edad" required>
+    <input type="password" name="password" placeholder="Contraseña" required>
+    <button type="submit">Agregar Usuario</button>
+</form>
+
+
+<div id="buttonBackContainer">
+    <button onclick="window.location.href='/home'">Volver a la Página Principal</button>
+</div>
+
+<div id="addedUserContainer"></div>
+
+<script>
+    document.getElementById('addUserForm').onsubmit = function(e) {
+        e.preventDefault();
+        const formData = new FormData(e.target);
+        const userData = Object.fromEntries(formData);
+        fetch('/api/users/addOne', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(userData),
+        })
+        .then(response => response.json())
+        .then(data => {
+            if(data.status === 'success') {
+                document.getElementById('addedUserContainer').innerHTML = '<p>Usuario agregado con éxito.</p>';
+            } else {
+                document.getElementById('addedUserContainer').innerHTML = `<p>Error al agregar usuario: ${data.message}</p>`;
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            document.getElementById('addedUserContainer').innerHTML = '<p>Error al procesar la solicitud.</p>';
+        });
+    };
+</script>

@@ -22,4 +22,10 @@ viewsRouter.get("/getOneUser", (req, res) => {
 
 })
 
+viewsRouter.get("/addOneUser", (req, res) => {
+
+      res.render('addOneUser')
+
+})
+
 export default viewsRouter;
