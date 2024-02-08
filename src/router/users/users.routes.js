@@ -126,7 +126,7 @@ usersRouter.put("/updateOne/:id", async (req, res) => {
 
             }
 
-            const oldConnection = user.last_connection;
+            const oldConnection = oldUser.last_connection;
 
             const newConnection = {
                   last_login: new Date().toISOString(),
