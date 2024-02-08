@@ -126,9 +126,18 @@ usersRouter.put("/updateOne/:id", async (req, res) => {
 
             }
 
+            const oldConnection = user.last_connection;
+
+            const newConnection = {
+                  last_login: new Date().toISOString(),
+                  last_logout: oldConnection.last_logout ? new Date(oldConnection.last_logout).toISOString() : null,
+                  last_modification: oldConnection.last_modification ? new Date(oldConnection.last_modification).toISOString() : null
+            };
+
             const newUser = {
                   ...oldUser,
                   ...newUserData,
+                  last_connection: newConnection
             }
 
             const response = await usersModel.findByIdAndUpdate(userId, newUser, {
