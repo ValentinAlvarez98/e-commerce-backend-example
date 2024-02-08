@@ -16,4 +16,10 @@ viewsRouter.get("/getAllUsers", (req, res) => {
 
 })
 
+viewsRouter.get("/getOneUser", (req, res) => {
+
+      res.render('getOneUser')
+
+})
+
 export default viewsRouter;
