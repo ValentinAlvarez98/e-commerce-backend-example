@@ -170,6 +170,15 @@ usersRouter.delete("/deleteOne/:id", async (req, res) => {
 
             const response = await usersModel.findByIdAndDelete(userId);
 
+            if (!response) {
+
+                  return res.status(400).json({
+                        status: "error",
+                        message: "User not found"
+                  })
+
+            }
+
             res.status(200).json({
                   status: "success",
                   message: "User deleted successfully",
