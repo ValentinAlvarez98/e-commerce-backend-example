@@ -3,8 +3,11 @@ import {
 } from "express";
 
 import usersRouter from "./users/users.routes.js";
+import viewsRouter from "./views/views.routes.js";
 
 const router = Router();
+
+router.use("/", viewsRouter);
 
 router.get("/api/test", (req, res) => {
 
@@ -21,12 +24,6 @@ router.get("/api/test", (req, res) => {
             });
 
       }
-
-})
-
-router.get("/users", (req, res) => {
-
-      res.render('users')
 
 })
 

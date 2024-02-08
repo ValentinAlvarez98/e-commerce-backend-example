@@ -1,0 +1,31 @@
+<h1>Lista de Usuarios</h1>
+    <div id="usersContainer"></div>
+
+    <script>
+        fetch('/api/users/getAll')
+            .then(response => response.json())
+            .then(data => {
+                const usersContainer = document.getElementById('usersContainer');
+                if(data.status === 'success' && data.payload.length > 0) {
+                    data.payload.forEach(user => {
+                        const userDiv = document.createElement('div');
+                        userDiv.innerHTML = `
+                            <p><strong>Nombre:</strong> ${user.first_name} ${user.last_name}</p>
+                            <p><strong>Email:</strong> ${user.email}</p>
+                            <p><strong>Edad:</strong> ${user.age}</p>
+                            <p><strong>Rol:</strong> ${user.role}</p>
+                            <p><strong>Teléfono:</strong> ${user.phone || 'N/A'}</p>
+                            <p><strong>Direcciones:</strong> ${user.addresses.map(address => `<div>${address.street}, ${address.city}</div>`).join('')}</p>
+                            <p><strong>Última Conexión:</strong> ${user.last_connection.last_login ? new Date(user.last_connection.last_login).toLocaleString() : 'N/A'}</p>
+                            <p><strong>Última Desconexión:</strong> ${user.last_connection.last_logout ? new Date(user.last_connection.last_logout).toLocaleString() : 'N/A'}</p>
+                            <p><strong>Última Modificación:</strong> ${user.last_connection.last_modification ? new Date(user.last_connection.last_modification).toLocaleString() : 'N/A'}</p>
+                              <p><strong>Fecha de Creación:</strong> ${new Date(user.date_created).toLocaleString()}</p>
+                        `;
+                        usersContainer.appendChild(userDiv);
+                    });
+                } else {
+                    usersContainer.innerHTML = '<p>No hay usuarios registrados.</p>';
+                }
+            })
+            .catch(error => console.error('Error:', error));
+    </script>
