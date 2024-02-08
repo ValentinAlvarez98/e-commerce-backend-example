@@ -1,6 +1,9 @@
 <h1>Lista de Usuarios</h1>
     <div id="usersContainer"></div>
 
+    <div id="buttonBackContainer">
+        <button onclick="window.location.href='/home'">Volver a la Página Principal</button>
+    </div>
     
 
     <script>
@@ -32,14 +35,13 @@
                             <p><strong>Última Modificación:</strong> ${user.last_connection.last_modification ? new Date(user.last_connection.last_modification).toLocaleString() : 'N/A'}</p>
                               <p><strong>Fecha de Creación:</strong> ${new Date(user.date_created).toLocaleString()}</p>
 
-                            <div>
-                                <button onclick="window.location.href='/home'">Volver a la Página Principal</button>
-                            </div>
                         `;
                         usersContainer.appendChild(userDiv);
                     });
                 } else {
-                    usersContainer.innerHTML = '<p>No hay usuarios registrados.</p>';
+                    usersContainer.innerHTML = `
+                    <p>No hay usuarios registrados.</p>
+                    `;
                 }
             })
             .catch(error => console.error('Error:', error));
