@@ -1,6 +1,7 @@
 import mongoose from 'mongoose';
+import CONFIG from '../../environments/config.js';
 
-const usersCollection = 'users-test';
+const usersCollection = CONFIG.MONGO_COLLECTIONS.users;
 
 const usersSchema = new mongoose.Schema({
 

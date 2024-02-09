@@ -10,6 +10,12 @@ viewsRouter.get("/home", (req, res) => {
 
 })
 
+viewsRouter.get('/users', (req, res) => {
+
+      res.render('users')
+
+})
+
 viewsRouter.get("/getAllUsers", (req, res) => {
 
       res.render('getAllUsers')

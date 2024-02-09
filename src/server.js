@@ -3,6 +3,7 @@ import handlebars from 'express-handlebars';
 import session from 'express-session';
 import CONFIG from './environments/config.js';
 import __dirname from './__dirname.js';
+import handleErrorsMiddleware from './middlewares/handleErrors.middleware.js';
 import {
       MongoManager
 } from './models/manager/mongo.manager.js';
@@ -31,6 +32,8 @@ app.set('view engine', __dirname + '/views');
 app.set('view engine', 'handlebars');
 app.use(express.static(__dirname + '/public'));
 app.use('/', router);
+
+app.use(handleErrorsMiddleware);
 
 app.listen(PORT, () => {
       console.log(`Server running on port: ${PORT}`);

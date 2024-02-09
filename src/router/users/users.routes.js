@@ -1,7 +1,8 @@
 import {
       Router
 } from "express";
-import usersModel from "../../models/schemas/users.schema.js";
+import DAOs from "../../models/daos/index.daos.js";
+import usersModel from "../../models/schemas/users.schema.js"; // A eliminar
 import {
       createHash,
       compareHash
@@ -13,7 +14,7 @@ usersRouter.get("/getAll", async (req, res) => {
 
       try {
 
-            const users = await usersModel.find({}).lean();
+            const users = await DAOs.users.getAll();
 
             res.status(200).json({
                   status: "success",
@@ -39,7 +40,7 @@ usersRouter.get("/getOne/:id", async (req, res) => {
 
             const userId = req.params.id;
 
-            const user = await usersModel.findById(userId).lean();
+            const user = await DAOs.users.getOneById(userId);
 
             res.status(200).json({
                   status: "success",

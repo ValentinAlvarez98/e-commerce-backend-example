@@ -11,6 +11,10 @@ const CONFIG = {
       API_URL: process.env.API_URL,
       PORT: process.env.PORT,
       MONGO_URL: process.env.MONGO_URL,
+      MONGO_COLLECTIONS: {
+            users: process.env.MONGO_COLLECTION_USERS,
+            products: process.env.MONGO_COLLECTION_PRODUCTS,
+      },
       SECRET: process.env.SECRET,
       KEY: process.env.KEY,
       ADMIN: {
