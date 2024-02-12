@@ -1,63 +1,210 @@
-<h1>Actualizar Usuario</h1>
+<h1>Actualizar usuario</h1>
 
-<input type="text" id="userId" placeholder="Ingresa el ID del usuario" required>
+<p>Para actualizar el usuario, primero debe iniciar sesión o ingresar el _id</p>
 
-<form id="updateUserForm">
-    <input type="text" name="first_name" placeholder="Nuevo Nombre" required>
-    <input type="text" name="last_name" placeholder="Nuevo Apellido" required>
-    <input type="number" name="age" placeholder="Nueva Edad" required>
-    <fieldset>
-        <legend>Agregar una Nueva Dirección</legend>
-        <input type="text" name="street" placeholder="Calle" required>
-        <input type="text" name="number" placeholder="Número">
-        <input type="text" name="city" placeholder="Ciudad" required>
-        <input type="text" name="state" placeholder="Estado" required>
-        <input type="text" name="location" placeholder="Localidad" required>
-        <input type="text" name="zip" placeholder="Código Postal" required>
-    </fieldset>
-    <button type="submit">Actualizar Usuario</button>
+<!-- Formulario de inicio de sesión -->
+<form id="loginForm">
+    <input type="email" id="loginEmail" placeholder="Email" required>
+    <input type="password" id="loginPassword" placeholder="Contraseña" required>
+    <button type="button" onclick="loginUser()">Iniciar Sesión</button>
 </form>
 
+<!-- Formulario para buscar por ID -->
+<form id="searchByIdForm" style="margin-top: 20px;">
+    <input type="text" id="userIdInput" placeholder="Ingresa el ID del usuario" required>
+    <button type="button" onclick="fetchUserById()">Buscar por ID</button>
+</form>
+
+<div id="userDetailsForm" style="display:none;">
+    <h3>Formulario de actualización de usuario</h3>
+    <form id="updateUserForm">
+        <input class="userFields" type="text" name="first_name" placeholder="Nuevo Nombre">
+        <input class="userFields" type="text" name="last_name" placeholder="Nuevo Apellido">
+        <input class="userFields" type="number" name="age" placeholder="Nueva Edad">
+        <input class="userFields" type="text" name="phone" placeholder="Nuevo Teléfono">
+        
+        <button id="submitUserButton" type="submit" disabled>Actualizar usuario</button>
+    </form>
+
+    <hr />
+
+    <div>
+            <button id="addressButton" onclick="showAddressForm()">
+                ¿Desea agregar una nueva dirección?
+            </button>
+        </div>
+
+    <form id="addressForm">
+        {{!-- Se agrega un nuevo campo para la dirección --}}
+
+        
+        
+    </form>
+</div>
+
 <div id="updateMessage"></div>
+
+<br/>
 
 <div id="buttonBackContainer">
     <button onclick="window.location.href='/users'">Volver</button>
 </div>
 
 <script>
-    document.getElementById('updateUserForm').onsubmit = function(event) {
-        event.preventDefault();
-        const userId = document.getElementById('userId').value;
-        const formData = new FormData(event.target);
-        const userData = Object.fromEntries(formData);
-        userData.address = {
-            street: userData.street,
-            number: userData.number,
-            city: userData.city,
-            state: userData.state,
-            location: userData.location,
-            zip: userData.zip
-        };
+let globalUserId = '';
 
-        fetch(`/api/users/updateOne/${userId}`, {
-            method: 'PUT',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(userData),
-        })
-        .then(response => response.json())
-        .then(data => {
-            if(data.status === 'success') {
-                document.getElementById('updateMessage').innerHTML = 'Usuario actualizado con éxito.';
-            } else {
-                document.getElementById('updateMessage').innerHTML = `Error al actualizar usuario: ${data.message}`;
-            }
-        })
-        .catch(error => {
-            console.error('Error:', error);
-            document.getElementById('updateMessage').innerHTML = 'Error al procesar la solicitud.';
-        });
-    };
+function loginUser() {
+    const email = document.getElementById('loginEmail').value;
+    const password = document.getElementById('loginPassword').value;
+
+    fetch('/api/users/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password }),
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.status === 'success') {
+            globalUserId = data.payload._id; // Guardar el _id del usuario autenticado
+            showUpdateForm();
+        } else {
+            alert('Inicio de sesión fallido. Por favor, verifica tus credenciales.');
+        }
+    })
+    .catch(error => console.error('Error:', error));
+}
+
+function fetchUserById() {
+    const userId = document.getElementById('userIdInput').value;
+
+    fetch(`/api/users/getOne/${userId}`)
+    .then(response => response.json())
+    .then(data => {
+        if (data.status === 'success') {
+            globalUserId = userId; // Usar el ID ingresado para la actualización
+            showUpdateForm();
+        } else {
+            alert('Usuario no encontrado.');
+        }
+    })
+    .catch(error => console.error('Error:', error));
+}
+
+function showUpdateForm() {
+    document.getElementById('userDetailsForm').style.display = 'block';
+}
+
+function showAddressForm() {
+
+    const addressForm = `
+    <fieldset>
+            <legend>Agregar una Nueva Dirección</legend>
+            <input class="addressFields" type="text" name="street" placeholder="Calle">
+            <input class="addressFields" type="text" name="number" placeholder="Número">
+            <input class="addressFields" type="text" name="city" placeholder="Ciudad">
+            <input class="addressFields" type="text" name="state" placeholder="Departamento">
+            <input class="addressFields" type="text" name="location" placeholder="Localidad">
+            <input class="addressFields" type="text" name="zip" placeholder="Código Postal">
+
+            <button id="submitAddressButton" type="submit" disabled>Agregar dirección</button>
+
+            </fieldset>
+    `;
+
+    document.getElementById('addressForm').innerHTML = addressForm;
+
+    document.getElementById('addressButton').style.display = 'none';
+
+    const submitAddressButton = document.getElementById('submitAddressButton');
+const addressFields = document.querySelectorAll('.addressFields');
+
+    // Si al menos un campo de dirección está lleno, habilitar el botón de submit. Pero si todos los campos están vacíos, deshabilitar el botón.
+addressFields.forEach(field => {
+    field.addEventListener('input', () => {
+        const isAnyFieldFilled = Array.from(addressFields).some(field => field.value);
+        submitAddressButton.disabled = !isAnyFieldFilled;
+    });
+});
+
+}
+
+const updateUserForm = document.getElementById('updateUserForm');
+const addressForm = document.getElementById('addressForm');
+
+updateUserForm.addEventListener('submit', event => {
+    event.preventDefault();
+    const data = new FormData(updateUserForm);
+
+      const obj = {}
+
+      data.forEach((value, key) => {
+            obj[key] = ['first_name', 'last_name'].includes(key) ? value.toLowerCase() : value;
+      });
+
+    fetch(`/api/users/updateOne/basicInfo/${globalUserId}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(obj),
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.status === 'success') {
+            document.getElementById('updateMessage').innerHTML = 'Usuario actualizado con éxito.';
+        } else {
+            const errors = data.errors.join(', ');
+                
+            document.getElementById('updateMessage').innerHTML = `Error al actualizar usuario: ${errors}`;
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        document.getElementById('updateMessage').innerHTML = 'Error al procesar la solicitud.';
+    });
+});
+
+addressForm.addEventListener('submit', event => {
+    event.preventDefault();
+    const data = new FormData(addressForm);
+
+      const obj = {}
+
+      data.forEach((value, key) => {
+            obj[key] = value;
+      });
+    fetch(`/api/users/updateOne/addresses/${globalUserId}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(obj),
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.status === 'success') {
+            document.getElementById('updateMessage').innerHTML = 'Dirección agregada con éxito.';
+        } else {
+            const errors = data.errors.join(', ');
+            document.getElementById('updateMessage').innerHTML = `Error al agregar dirección: ${errors}`;
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        document.getElementById('updateMessage').innerHTML = 'Error al procesar la solicitud.';
+    });
+});
+
+const submitUserButton = document.getElementById('submitUserButton');
+
+const usersFields = document.querySelectorAll('.userFields');
+
+
+// Si al menos un campo de usuario está lleno, habilitar el botón de submit. Pero si todos los campos están vacíos, deshabilitar el botón.
+usersFields.forEach(field => {
+    field.addEventListener('input', () => {
+        const isAnyFieldFilled = Array.from(usersFields).some(field => field.value);
+        submitUserButton.disabled = !isAnyFieldFilled;
+    });
+});
+
+
+
+
 </script>
-

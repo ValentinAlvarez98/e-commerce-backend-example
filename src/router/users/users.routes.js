@@ -1,258 +1,43 @@
 import {
       Router
 } from "express";
+
+import UsersController from "../../controllers/users/users.controller.js";
 import DAOs from "../../models/daos/index.daos.js";
-import usersModel from "../../models/schemas/users.schema.js"; // A eliminar
+
 import {
       createHash,
       compareHash
 } from "../../utils/bcrypt/bcrypt.utils.js";
 
+import {
+      validateUserToRegister,
+      validateBasicData,
+      validateAddressData,
+} from "../../middlewares/validations/users/users.validations.middleware.js";
+
+import {
+      validateEmail
+} from "../../middlewares/validations/validations.middleware.js";
+
+
 const usersRouter = Router();
 
-usersRouter.get("/getAll", async (req, res) => {
+usersRouter.get("/getAll", UsersController.getAll);
 
-      try {
+usersRouter.get("/getOne/:id", UsersController.getOneById);
 
-            const users = await DAOs.users.getAll();
+usersRouter.get("/getOneByEmail", validateEmail, UsersController.getOneByEmail);
 
-            res.status(200).json({
-                  status: "success",
-                  message: "All users",
-                  payload: users
-            })
+usersRouter.post("/addOne", validateUserToRegister, UsersController.addOne);
 
-      } catch (error) {
+usersRouter.put("/updateOne/basicInfo/:id", validateBasicData, UsersController.updateOneBasicInfo);
 
-            res.status(400).json({
-                  status: "error",
-                  message: "Users not found",
-                  payload: error
-            })
+usersRouter.put("/updateOne/addresses/:id", validateAddressData, UsersController.updateOneAddresses);
 
-      }
+usersRouter.delete("/deleteOne/:id", UsersController.deleteOne);
 
-})
-
-usersRouter.get("/getOne/:id", async (req, res) => {
-
-      try {
-
-            const userId = req.params.id;
-
-            const user = await DAOs.users.getOneById(userId);
-
-            res.status(200).json({
-                  status: "success",
-                  message: "User found",
-                  payload: user
-            })
-
-      } catch (error) {
-
-            res.status(400).json({
-                  status: "error",
-                  message: "User not found",
-                  payload: error
-            })
-
-      }
-
-});
-
-usersRouter.post("/addOne", async (req, res) => {
-
-      try {
-
-            const enteredUser = req.body;
-
-            const hashedPassword = createHash(enteredUser.password);
-
-            const userToAdd = {
-                  ...enteredUser,
-                  password: hashedPassword
-            }
-
-            const reponse = await usersModel.create(userToAdd);
-
-            res.status(200).json({
-                  status: "success",
-                  message: "User added",
-                  payload: reponse
-            })
-
-      } catch (error) {
-
-            res.status(400).json({
-                  status: "error",
-                  message: "User not added",
-                  payload: error
-            })
-
-      }
-
-
-});
-
-usersRouter.put("/updateOne/:id", async (req, res) => {
-
-      try {
-
-            const userId = req.params.id;
-
-            const newUserData = req.body;
-
-            const newAddress = newUserData.address;
-
-            const oldUser = await usersModel.findById(userId).lean();
-
-            const oldAddress = oldUser.addresses;
-
-            if (newAddress) {
-
-                  if (oldAddress.length < 3) {
-
-                        const updatedAddresses = [...oldAddress, newAddress];
-
-                        newUserData.addresses = updatedAddresses;
-
-                  } else {
-
-                        return res.status(400).json({
-                              status: "error",
-                              message: "User cannot have more than 3 addresses"
-                        })
-
-                  }
-
-            }
-
-            const oldConnection = oldUser.last_connection;
-
-            const newConnection = {
-                  last_login: oldConnection.last_login ? new Date(oldConnection.last_login).toISOString() : null,
-                  last_logout: oldConnection.last_logout ? new Date(oldConnection.last_logout).toISOString() : null,
-                  last_modification: new Date().toISOString()
-            };
-
-            const newUser = {
-                  ...oldUser,
-                  ...newUserData,
-                  last_connection: newConnection
-            }
-
-            const response = await usersModel.findByIdAndUpdate(userId, newUser, {
-                  new: true
-            });
-
-            res.status(200).json({
-                  status: "success",
-                  message: "User updated successfully",
-                  payload: response
-            })
-
-      } catch (error) {
-
-            res.status(400).json({
-                  status: "error",
-                  message: "User not updated",
-                  payload: error
-            })
-
-      }
-
-});
-
-usersRouter.delete("/deleteOne/:id", async (req, res) => {
-
-      try {
-
-            const userId = req.params.id;
-
-            const response = await usersModel.findByIdAndDelete(userId);
-
-            if (!response) {
-
-                  return res.status(400).json({
-                        status: "error",
-                        message: "User not found"
-                  })
-
-            }
-
-            res.status(200).json({
-                  status: "success",
-                  message: "User deleted successfully",
-                  payload: response
-            })
-
-      } catch (error) {
-
-            res.status(400).json({
-                  status: "error",
-                  message: "User not deleted",
-                  payload: error
-            })
-
-      }
-
-});
-
-usersRouter.delete("/deleteInactives", async (req, res) => {
-
-      try {
-
-            const users = await usersModel.find({}).lean();
-            const now = new Date();
-
-            const inactiveUsersIds = users.filter(user => {
-
-                  const lastLogin = new Date(user.last_connection.last_login);
-                  const lastLogout = user.last_connection.last_logout ? new Date(user.last_connection.last_logout) : null;
-                  const lastModification = new Date(user.last_connection.last_modification);
-
-                  const mostRecentTime = [lastLogin, lastLogout, lastModification].filter(time => time !== null).sort((a, b) => b - a)[0];
-
-                  return now - mostRecentTime > 10000;
-
-            }).map(user => user._id);
-
-            if (inactiveUsersIds.length > 0) {
-
-                  const deletedUsers = await usersModel.deleteMany({
-                        _id: {
-                              $in: inactiveUsersIds
-                        }
-                  });
-
-                  res.status(200).json({
-                        status: "success",
-                        message: "Inactive users deleted",
-                        payload: deletedUsers
-                  });
-
-            } else {
-
-                  res.status(200).json({
-                        status: "success",
-                        message: "No inactive users found",
-                        payload: {}
-                  });
-
-            }
-
-      } catch (error) {
-
-            res.status(400).json({
-                  status: "error",
-                  message: "Inactive users not deleted",
-                  payload: error
-            });
-
-      }
-
-});
-
+usersRouter.delete("/deleteInactives", UsersController.deleteInactives);
 
 usersRouter.post("/login", async (req, res) => {
 
@@ -263,9 +48,7 @@ usersRouter.post("/login", async (req, res) => {
                   password
             } = req.body;
 
-            const user = await usersModel.findOne({
-                  email: email
-            }).lean();
+            const user = await DAOs.users.getOneByEmail(email);
 
             if (!user) {
 
@@ -300,9 +83,7 @@ usersRouter.post("/login", async (req, res) => {
                   last_connection: newConnection,
             }
 
-            const loggedUser = await usersModel.findByIdAndUpdate(user._id, userToUpdate, {
-                  new: true
-            });
+            const loggedUser = await DAOs.users.updateOne(user._id, userToUpdate);
 
             req.session.user = {
                   email: loggedUser.email,
@@ -357,7 +138,7 @@ usersRouter.get("/logout/:id", async (req, res) => {
             }).lean();
                   */
 
-            const user = await usersModel.findById(userId).lean();
+            const user = await DAOs.users.getOneById(userId);
 
             if (!user) {
 
@@ -381,9 +162,7 @@ usersRouter.get("/logout/:id", async (req, res) => {
                   last_connection: newConnection
             }
 
-            const userLoggedOut = await usersModel.findByIdAndUpdate(userId, userToUpdate, {
-                  new: true
-            });
+            const userLoggedOut = await DAOs.users.updateOne(user._id, userToUpdate);
 
             /* req.session.destroy(); */
 

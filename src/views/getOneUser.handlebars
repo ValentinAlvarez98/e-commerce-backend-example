@@ -29,12 +29,15 @@
                             <p><strong>Teléfono:</strong> ${user.phone || 'N/A'}</p>
                             <p><strong>Direcciones:</strong> ${user.addresses.map(address => 
                                 `<div>
-                                    ${address.street},
-                                    ${address.number},
-                                    ${address.city},
-                                    ${address.state},
-                                    ${address.location},
-                                    ${address.zip}
+                                    <h3>Dirección: ${address.street} ${address.number}</h3>
+                                    <ul>
+                                        <li>Calle: ${address.street}</li>
+                                        <li>Número: ${address.number}</li>
+                                        <li>Ciudad: ${address.city}</li>
+                                        <li>Estado: ${address.state}</li>
+                                        <li>Localidad: ${address.location}</li>
+                                        <li>Código Postal: ${address.zip}</li>
+                                    </ul>
                                 </div>`
                             ).join('')}</p>
                             <p><strong>Última Conexión:</strong> ${user.last_connection.last_login ? new Date(user.last_connection.last_login).toLocaleString() : 'N/A'}</p>

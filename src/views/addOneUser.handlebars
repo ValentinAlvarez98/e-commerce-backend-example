@@ -5,6 +5,7 @@
     <input type="text" name="last_name" placeholder="Apellido" required>
     <input type="email" name="email" placeholder="Correo electrónico" required>
     <input type="number" name="age" placeholder="Edad" required>
+    <input type="test" name="phone" placeholder="Teléfono" required>
     <input type="password" name="password" placeholder="Contraseña" required>
     <button type="submit">Agregar Usuario</button>
 </form>
@@ -33,7 +34,8 @@
             if(data.status === 'success') {
                 document.getElementById('addedUserContainer').innerHTML = '<p>Usuario agregado con éxito.</p>';
             } else {
-                document.getElementById('addedUserContainer').innerHTML = `<p>Error al agregar usuario: ${data.message}</p>`;
+                const errors = data.errors.join(', ');
+                document.getElementById('addedUserContainer').innerHTML = `<p>Error al agregar usuario: ${errors}</p>`;
             }
         })
         .catch(error => {
