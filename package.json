@@ -2,11 +2,12 @@
   "name": "e-commerce-example",
   "version": "1.0.0",
   "description": "Ejemplo de e-commerce para mostrar",
-  "main": "index.js",
+  "main": "server.js",
   "type": "module",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "cd src && nodemon ./server.js -m prod"
+    "start": "cd src && nodemon ./server.js -m prod",
+    "dev": "cd src && nodemon ./server.js -m dev"
   },
   "repository": {
     "type": "git",

@@ -149,14 +149,9 @@ export class UsersController {
                         last_modification: new Date().toISOString()
                   };
 
-                  const age = newUserData.age ? newUserData.age : oldUser.age;
-
-                  const numberAge = parseInt(age);
-
                   const newUser = {
                         ...oldUser,
                         ...newUserData,
-                        age: numberAge,
                         last_connection: newConnection
                   }
 
@@ -180,7 +175,7 @@ export class UsersController {
 
       }
 
-      static async updateOneAddresses(req, res, next) {
+      static async updateOneShippingAddresses(req, res, next) {
 
             try {
 
@@ -190,11 +185,11 @@ export class UsersController {
 
                   const oldUser = await DAOs.users.getOneById(userId)
 
-                  const oldAddresses = oldUser.addresses;
+                  const oldAddresses = oldUser.shipping_addresses;
 
                   if (oldAddresses.length >= 3) {
 
-                        throw new ValidationError(["No se pueden agregar más de 3 direcciones"]);
+                        throw new ValidationError(["No se pueden agregar más de 3 direcciones de envío"]);
 
                   }
 
@@ -210,7 +205,7 @@ export class UsersController {
 
                   const newUser = {
                         ...oldUser,
-                        addresses: oldAddresses,
+                        shipping_addresses: oldAddresses,
                         last_connection: newConnection
                   }
 
@@ -229,6 +224,56 @@ export class UsersController {
                         message: "User not updated",
                         payload: error
                   })
+            }
+
+      }
+
+      static async updateOneBillingAddresses(req, res, next) {
+
+            try {
+
+                  const userId = req.params.id;
+
+                  const newAddress = req.body;
+
+                  const oldUser = await DAOs.users.getOneById(userId)
+
+                  const oldAddresses = oldUser.billing_addresses;
+
+                  if (oldAddresses.length >= 1) {
+
+                        throw new ValidationError(["No se pueden agregar más de 1 direccion de facturación"]);
+
+                  }
+
+                  oldAddresses.push(newAddress);
+
+                  const oldConnection = oldUser.last_connection;
+
+                  const newConnection = {
+                        last_login: oldConnection.last_login ? new Date(oldConnection.last_login).toISOString() : null,
+                        last_logout: oldConnection.last_logout ? new Date(oldConnection.last_logout).toISOString() : null,
+                        last_modification: new Date().toISOString()
+                  };
+
+                  const newUser = {
+                        ...oldUser,
+                        billing_addresses: oldAddresses,
+                        last_connection: newConnection
+                  }
+
+                  const response = await DAOs.users.updateOne(userId, newUser);
+
+                  res.status(200).json({
+                        status: "success",
+                        message: "User updated successfully",
+                        payload: response
+                  })
+
+            } catch (error) {
+
+                  res.status(400).json(error)
+
             }
 
       }

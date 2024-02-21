@@ -21,39 +21,13 @@ const usersSchema = new mongoose.Schema({
             unique: [true, 'Email already exists'],
       },
 
-      age: {
-            type: Number,
-            required: [true, 'Age is required'],
-      },
-
       password: {
             type: String,
             required: [true, 'Password is required'],
       },
 
-      role: {
-            type: String,
-            enum: ['ADMIN', 'USER', 'PREMIUM'],
-            default: 'USER',
-      },
-
-      phone: {
-            type: String,
-      },
-
-      addresses: {
+      shipping_addresses: {
             type: [{
-                  street: {
-                        type: String,
-                        required: [true, 'Street is required'],
-                  },
-                  number: {
-                        type: String,
-                  },
-                  city: {
-                        type: String,
-                        required: [true, 'City is required'],
-                  },
                   state: {
                         type: String,
                         required: [true, 'State is required'],
@@ -62,12 +36,46 @@ const usersSchema = new mongoose.Schema({
                         type: String,
                         required: [true, 'Location is required'],
                   },
-                  zip: {
+                  address: {
                         type: String,
-                        required: [true, 'Zip is required'],
+                        required: [true, 'Address is required'],
+                  },
+                  phone: {
+                        type: String,
+                        required: [true, 'Contact phone is required'],
+                  },
+                  name: {
+                        type: String,
+                        required: [true, 'Contact name is required'],
                   },
             }],
-            validate: [arrayLimit, '{PATH} exceeds the limit of 3'],
+            validate: [shippingLimit, '{PATH} exceeds the limit of 3'],
+      },
+
+      billing_addresses: {
+            type: [{
+                  state: {
+                        type: String,
+                        required: [true, 'State is required'],
+                  },
+                  location: {
+                        type: String,
+                        required: [true, 'Location is required'],
+                  },
+                  address: {
+                        type: String,
+                        required: [true, 'Address is required'],
+                  },
+                  phone: {
+                        type: String,
+                        required: [true, 'Contact phone is required'],
+                  },
+                  name: {
+                        type: String,
+                        required: [true, 'Contact name is required'],
+                  },
+            }],
+            validate: [billingLimit, '{PATH} exceeds the limit of 1'],
       },
 
       date_created: {
@@ -81,23 +89,6 @@ const usersSchema = new mongoose.Schema({
 
       password_reset_expires: {
             type: Date,
-      },
-
-      documents: {
-            type: [{
-                  name: {
-                        type: String,
-                        required: [true, 'Document Name is required']
-                  },
-                  reference: {
-                        type: String,
-                        required: [true, 'Document Reference is required']
-                  },
-                  extension: {
-                        type: String,
-                        required: [true, 'Document Extension is required']
-                  },
-            }]
       },
 
       last_connection: {
@@ -117,8 +108,12 @@ const usersSchema = new mongoose.Schema({
 
 });
 
-function arrayLimit(val) {
+function shippingLimit(val) {
       return val.length <= 3;
+}
+
+function billingLimit(val) {
+      return val.length <= 1;
 }
 
 const usersModel = mongoose.model(usersCollection, usersSchema);

@@ -33,7 +33,9 @@ usersRouter.post("/addOne", validateUserToRegister, UsersController.addOne);
 
 usersRouter.put("/updateOne/basicInfo/:id", validateBasicData, UsersController.updateOneBasicInfo);
 
-usersRouter.put("/updateOne/addresses/:id", validateAddressData, UsersController.updateOneAddresses);
+usersRouter.put("/updateOne/shipping_addresses/:id", validateAddressData, UsersController.updateOneShippingAddresses);
+
+usersRouter.put("/updateOne/billing_addresses/:id", validateAddressData, UsersController.updateOneBillingAddresses);
 
 usersRouter.delete("/deleteOne/:id", UsersController.deleteOne);
 

@@ -25,14 +25,25 @@ export const resultCheck = (req, res, next) => {
 
 export const validateNotEmptyFields = (fields) => {
 
-      const validations = fields.map(
-            field => body(field)
-            .notEmpty()
-            .withMessage(`El campo ${field} no puede estar vacío`)
-      );
+      return [body(fields).notEmpty().withMessage("Campo requerido"), resultCheck];
 
-      return [...validations, resultCheck];
+};
 
+export const validateNotExtraFields = (fields) => {
+
+      return (req, res, next) => {
+
+            const requestFields = Object.keys(req.body);
+            const invalidFields = requestFields.filter(field => !fields.includes(field));
+
+            if (invalidFields.length > 0) {
+
+                  return next(new ValidationError(invalidFields.map(field => `El campo ${field} no es válido`)));
+
+            }
+
+            next();
+      };
 };
 
 export const validateEmail = [

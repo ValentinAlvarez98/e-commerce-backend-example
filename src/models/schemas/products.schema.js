@@ -41,26 +41,75 @@ const productsSchema = new mongoose.Schema({
             required: true,
       },
 
-      section: {
-            type: String,
-            required: true,
-      },
-
-      category: {
-            type: String,
-            required: true,
-      },
-
-      color: {
-            type: String,
-      },
-
       thumbnails: {
             type: Array,
             required: false,
       },
 
+      color: {
+            type: String,
+            required: true,
+      },
+
 });
+
+
+const categoriesSchema = new mongoose.Schema({
+
+      dogs: {
+            type: {
+                  food: {
+                        type: {
+                              dry: {
+                                    type: productsSchema,
+                              },
+                              wet: {
+                                    type: productsSchema,
+                              },
+                        }
+                  },
+                  accessories: {
+                        type: {
+                              collars: {
+                                    type: productsSchema,
+                              },
+                              leashes: {
+                                    type: productsSchema,
+                              },
+                        }
+                  },
+                  toys: {
+                        type: productsSchema,
+                        required: true,
+                  },
+            },
+            required: true,
+
+      },
+      cats: {
+            type: {
+                  food: {
+                        type: productsSchema,
+                        required: true,
+                  }
+            },
+            required: true,
+
+      },
+
+      small_animals: {
+            type: {
+                  food: {
+                        type: productsSchema,
+                        required: true,
+                  }
+            },
+            required: true,
+
+      },
+
+});
+
 
 
 productsSchema.plugin(mongoosePaginate);
