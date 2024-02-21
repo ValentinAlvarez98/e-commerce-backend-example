@@ -17,6 +17,9 @@ const CONFIG = {
       },
       SECRET: process.env.SECRET,
       KEY: process.env.KEY,
+      ADMIN: {
+            email: process.env.ADMIN_EMAIL,
+      },
       ENV: mode,
       MAIL: {
             user: process.env.MAIL_USER,
