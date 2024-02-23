@@ -6,8 +6,8 @@
   "type": "module",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "cd src && node ./server.js -m prod",
-    "dev": "cd src && nodemon ./server.js -m dev"
+    "start": "cd src && nodemon ./server.js -m prod",
+    "dev": "cd src && node ./server.js -m dev"
   },
   "repository": {
     "type": "git",

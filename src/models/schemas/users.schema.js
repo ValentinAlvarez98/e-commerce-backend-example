@@ -91,19 +91,9 @@ const usersSchema = new mongoose.Schema({
             type: Date,
       },
 
-      last_connection: {
-            last_login: {
-                  type: Date,
-                  default: null,
-            },
-            last_logout: {
-                  type: Date,
-                  default: null,
-            },
-            last_modification: {
-                  type: Date,
-                  default: Date.now,
-            }
+      last_activity: {
+            type: Date,
+            required: [true, 'Last activity is required'],
       },
 
 });

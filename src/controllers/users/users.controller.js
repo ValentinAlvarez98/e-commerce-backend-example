@@ -1,5 +1,6 @@
 import DAOs from "../../models/daos/index.daos.js";
 import ValidationError from "../../services/errors/validationError.js";
+import ControllerError from "../../services/errors/controllerError.js";
 
 import {
       createHash,
@@ -10,35 +11,56 @@ import {
       UserService
 } from "../../services/users/users.services.js";
 
+import {
+      successResponse,
+      errorResponse
+} from "../../utils/responses/responses.utils.js";
+
 const userService = new UserService();
 
 export class UsersController {
 
-      static async getAll(req, res, next) {
+      constructor() {
+
+            this.formattedSuccessRes = this.formattedSuccessRes.bind(this);
+
+            this.formattedErrorRes = this.formattedErrorRes.bind(this);
+
+      }
+
+      formattedSuccessRes(res, statusCode, message, payload) {
+
+            const response = successResponse(statusCode, message, payload);
+
+            res.status(statusCode).json(response);
+
+      }
+
+      formattedErrorRes(res, statusCode, message, error) {
+
+            const response = errorResponse(statusCode, message, error);
+
+            res.status(statusCode).json(response);
+
+      }
+
+      async getAll(req, res, next) {
 
             try {
 
                   const users = await DAOs.users.getAll();
 
-                  res.status(200).json({
-                        status: "success",
-                        message: "All users",
-                        payload: users
-                  })
+                  this.formattedSuccessRes(res, 200, "Usuarios encontrados", users);
 
             } catch (error) {
 
-                  res.status(400).json({
-                        status: "error",
-                        message: "Users not found",
-                        error
-                  })
+                  this.formattedErrorRes(res, 400, error.message, error.errors);
 
             }
 
       }
 
-      static async getOneById(req, res, next) {
+      async getOneById(req, res, next) {
 
             try {
 
@@ -46,25 +68,17 @@ export class UsersController {
 
                   const response = await DAOs.users.getOneById(userId);
 
-                  res.status(200).json({
-                        status: "success",
-                        message: "User found",
-                        payload: response
-                  })
+                  res.status(200).json(this.formattedResponse.success(200, `Usuario con id ${userId}`, response));
 
             } catch (error) {
 
-                  res.status(400).json({
-                        status: "error",
-                        message: "User not found",
-                        error
-                  })
+                  res.status(400).json(this.formattedResponse.error(400, error.message, error.errors));
 
             }
 
       }
 
-      static async getOneByEmail(req, res, next) {
+      async getOneByEmail(req, res, next) {
 
             try {
 
@@ -72,26 +86,18 @@ export class UsersController {
 
                   const response = await DAOs.users.getOneByEmail(email);
 
-                  res.status(200).json({
-                        status: "success",
-                        message: "User found",
-                        payload: response
-                  })
+                  res.status(200).json(this.formattedResponse.success(200, `Usuario con email ${email}`, response));
 
 
             } catch (error) {
 
-                  res.status(400).json({
-                        status: "error",
-                        message: "User not found",
-                        error
-                  })
+                  res.status(400).json(this.formattedResponse.error(400, error.message, error.errors));
 
             }
 
       }
 
-      static async addOne(req, res, next) {
+      async addOne(req, res, next) {
 
             try {
 
@@ -106,29 +112,21 @@ export class UsersController {
 
                   const response = await DAOs.users.addOne(userToAdd);
 
-                  res.status(200).json({
-                        status: "success",
-                        message: "User added",
-                        payload: response
-                  })
+                  res.status(201).json(this.formattedResponse.success(201, `Usuario ${enteredUser.email} creado`, response));
 
             } catch (error) {
 
-                  res.status(400).json({
-                        status: "error",
-                        message: "User not added",
-                        payload: error
-                  })
+                  res.status(400).json(this.formattedResponse.error(400, error.message, error.errors));
 
             }
 
       }
 
-      static async updateOneBasicInfo(req, res, next) {
+      async updateOneBasicInfo(req, res, next) {
 
             try {
 
-                  const userId = req.params.id;
+                  const userId = req.user._id
 
                   const newUserData = req.body;
 
@@ -139,7 +137,7 @@ export class UsersController {
                         }
                   }
 
-                  const oldUser = await DAOs.users.getOneById(userId);
+                  const oldUser = req.user
 
                   const oldConnection = oldUser.last_connection;
 
@@ -157,25 +155,17 @@ export class UsersController {
 
                   const response = await DAOs.users.updateOne(userId, newUser);
 
-                  res.status(200).json({
-                        status: "success",
-                        message: "User updated successfully",
-                        payload: response
-                  })
+                  res.status(200).json(this.formattedResponse.success(200, `Usuario con id ${userId} actualizado`, response));
 
             } catch (error) {
 
-                  res.status(400).json({
-                        status: "error",
-                        message: "User not updated",
-                        payload: error
-                  })
+                  res.status(400).json(this.formattedResponse.error(400, error.message, error.errors));
 
             }
 
       }
 
-      static async updateOneShippingAddresses(req, res, next) {
+      async updateOneShippingAddresses(req, res, next) {
 
             try {
 
@@ -189,7 +179,11 @@ export class UsersController {
 
                   if (oldAddresses.length >= 3) {
 
-                        throw new ValidationError(["No se pueden agregar más de 3 direcciones de envío"]);
+                        throw {
+                              statusCode: 400,
+                              message: "Error al agregar dirección de envío",
+                              errors: ["No se pueden agregar más de 3 direcciones de envío"]
+                        }
 
                   }
 
@@ -219,16 +213,15 @@ export class UsersController {
 
             } catch (error) {
 
-                  res.status(400).json({
-                        status: "error",
-                        message: "User not updated",
-                        payload: error
-                  })
+                  const formattedError = errorResponse(error.statusCode, error.message, error.errors);
+
+                  res.status(error.statusCode).json(formattedError);
+
             }
 
       }
 
-      static async updateOneBillingAddresses(req, res, next) {
+      async updateOneBillingAddresses(req, res, next) {
 
             try {
 
@@ -272,13 +265,15 @@ export class UsersController {
 
             } catch (error) {
 
-                  res.status(400).json(error)
+                  const formattedError = errorResponse(error.statusCode, error.message, error.errors);
+
+                  res.status(error.statusCode).json(formattedError);
 
             }
 
       }
 
-      static async deleteOne(req, res, next) {
+      async deleteOne(req, res, next) {
 
             try {
 
@@ -294,17 +289,15 @@ export class UsersController {
 
             } catch (error) {
 
-                  res.status(400).json({
-                        status: "error",
-                        message: "User not deleted",
-                        payload: error
-                  })
+                  const formattedError = errorResponse(error.statusCode, error.message, error.errors);
+
+                  res.status(error.statusCode).json(formattedError);
 
             }
 
       }
 
-      static async deleteInactives(req, res, next) {
+      async deleteInactives(req, res, next) {
 
             try {
 
@@ -332,11 +325,34 @@ export class UsersController {
 
             } catch (error) {
 
-                  res.status(400).json({
-                        status: "error",
-                        message: "Inactive users not deleted",
-                        payload: error
-                  });
+                  const formattedError = errorResponse(error.statusCode, error.message, error.errors);
+
+                  res.status(error.statusCode).json(formattedError);
+
+            }
+
+      }
+
+      async login(req, res, next) {
+
+            try {
+
+                  const {
+                        email,
+                        password
+                  } = req.body;
+
+                  const user = await userService.loginUser(email, password);
+
+                  const preparedResponse = successResponse(200, `El usuario ${user.email} ha iniciado sesión`, user)
+
+                  res.status(200).json(preparedResponse);
+
+            } catch (error) {
+
+                  const formattedError = errorResponse(error.statusCode, error.message, error.errors);
+
+                  res.status(error.statusCode).json(formattedError);
 
             }
 

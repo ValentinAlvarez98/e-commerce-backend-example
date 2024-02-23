@@ -1,6 +1,52 @@
 import DAOs from "../../models/daos/index.daos.js";
+import {
+      compareHash,
+      createHash
+} from "../../utils/bcrypt/bcrypt.utils.js";
 
 export class UserService {
+
+
+      async loadUser(id) {
+
+            const dbResponse = await DAOs.users.getOneById(id);
+
+            if (dbResponse.error) {
+
+                  throw {
+                        statusCode: 404,
+                        message: "Error al obtener el usuario",
+                        errors: ["El usuario no existe"],
+                  }
+
+            }
+
+            return dbResponse;
+
+      }
+
+      async updateActivity(id) {
+
+            const now = new Date();
+
+            const dbResponse = await DAOs.users.updateOne(id, {
+                  last_activity: now
+            });
+
+            if (dbResponse.errors) {
+
+                  throw {
+                        statusCode: 404,
+                        message: "Error al actualizar la actividad",
+                        errors: ["No se pudo actualizar la actividad del usuario"],
+                  }
+
+            }
+
+            return dbResponse;
+
+      }
+
       async findInactiveUsers() {
 
             const users = await DAOs.users.getAll();
@@ -8,11 +54,9 @@ export class UserService {
 
             return users.filter(user => {
 
-                  const lastLogin = new Date(user.last_connection.last_login);
-                  const lastLogout = user.last_connection.last_logout ? new Date(user.last_connection.last_logout) : null;
-                  const lastModification = new Date(user.last_connection.last_modification);
+                  const last_activity = user.last_activity;
 
-                  const mostRecentTime = [lastLogin, lastLogout, lastModification].filter(time => time !== null).sort((a, b) => b - a)[0];
+                  const mostRecentTime = [last_activity].filter(time => time !== null).sort((a, b) => b - a)[0];
 
                   return now - mostRecentTime > 10000;
 
@@ -22,6 +66,38 @@ export class UserService {
       async deleteInactiveUsers(userIds) {
 
             return await DAOs.users.deleteMany(userIds);
+
+      }
+
+      async loginUser(email, password) {
+
+            const user = await DAOs.users.getOneByEmail(email);
+
+            if (!user) {
+
+                  throw {
+                        statusCode: 404,
+                        message: "Error al iniciar sesión",
+                        errors: ["El usuario no existe"],
+                  }
+
+            }
+
+            const isPasswordCorrect = compareHash(password, user.password);
+
+            if (!isPasswordCorrect) {
+
+                  throw {
+                        statusCode: 404,
+                        message: "Error al iniciar sesión",
+                        errors: ["La contraseña es incorrecta"],
+                  }
+
+            }
+
+            const loggedUser = await this.updateActivity(user._id);
+
+            return loggedUser;
 
       }
 

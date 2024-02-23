@@ -25,7 +25,7 @@ export const resultCheck = (req, res, next) => {
 
 export const validateNotEmptyFields = (fields) => {
 
-      return [body(fields).notEmpty().withMessage("Campo requerido"), resultCheck];
+      return fields.map((field) => body(field).notEmpty().withMessage(`El campo ${field} no puede estar vacío`));
 
 };
 

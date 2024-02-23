@@ -11,6 +11,7 @@ import {
 } from "../../utils/bcrypt/bcrypt.utils.js";
 
 import {
+      validateLogin,
       validateUserToRegister,
       validateBasicData,
       validateAddressData,
@@ -20,103 +21,34 @@ import {
       validateEmail
 } from "../../middlewares/validations/validations.middleware.js";
 
+import {
+      loadUserByParams as loadByParams
+} from "../../middlewares/loads/users/loadsUsers.middleware.js";
+
+const usersController = new UsersController();
+
 
 const usersRouter = Router();
 
-usersRouter.get("/getAll", UsersController.getAll);
+usersRouter.get("/getAll", usersController.getAll.bind(usersController));
 
-usersRouter.get("/getOne/:id", UsersController.getOneById);
+usersRouter.get("/getOne/:id", usersController.getOneById);
 
-usersRouter.get("/getOneByEmail", validateEmail, UsersController.getOneByEmail);
+usersRouter.get("/getOneByEmail", validateEmail, usersController.getOneByEmail);
 
-usersRouter.post("/addOne", validateUserToRegister, UsersController.addOne);
+usersRouter.post("/addOne", validateUserToRegister, usersController.addOne);
 
-usersRouter.put("/updateOne/basicInfo/:id", validateBasicData, UsersController.updateOneBasicInfo);
+usersRouter.put("/updateOne/basicInfo/:id", validateBasicData, loadByParams, usersController.updateOneBasicInfo);
 
-usersRouter.put("/updateOne/shipping_addresses/:id", validateAddressData, UsersController.updateOneShippingAddresses);
+usersRouter.put("/updateOne/shipping_addresses/:id", validateAddressData, usersController.updateOneShippingAddresses);
 
-usersRouter.put("/updateOne/billing_addresses/:id", validateAddressData, UsersController.updateOneBillingAddresses);
+usersRouter.put("/updateOne/billing_addresses/:id", validateAddressData, usersController.updateOneBillingAddresses);
 
-usersRouter.delete("/deleteOne/:id", UsersController.deleteOne);
+usersRouter.delete("/deleteOne/:id", usersController.deleteOne);
 
-usersRouter.delete("/deleteInactives", UsersController.deleteInactives);
+usersRouter.delete("/deleteInactives", usersController.deleteInactives);
 
-usersRouter.post("/login", async (req, res) => {
-
-      try {
-
-            const {
-                  email,
-                  password
-            } = req.body;
-
-            const user = await DAOs.users.getOneByEmail(email);
-
-            if (!user) {
-
-                  return res.status(400).json({
-                        status: "error",
-                        message: "User not found"
-                  })
-
-            }
-
-            const compare = compareHash(password, user.password);
-
-            if (!compare) {
-
-                  return res.status(400).json({
-                        status: "error",
-                        message: "Password incorrect"
-                  })
-
-            }
-
-            const oldConnection = user.last_connection;
-
-            const newConnection = {
-                  last_login: new Date().toISOString(),
-                  last_logout: oldConnection.last_logout ? new Date(oldConnection.last_logout).toISOString() : null,
-                  last_modification: oldConnection.last_modification ? new Date(oldConnection.last_modification).toISOString() : null
-            };
-
-            const userToUpdate = {
-                  ...user,
-                  last_connection: newConnection,
-            }
-
-            const loggedUser = await DAOs.users.updateOne(user._id, userToUpdate);
-
-            req.session.user = {
-                  email: loggedUser.email,
-                  _id: loggedUser._id,
-                  role: loggedUser.role
-            }
-
-            res.status(200).json({
-
-                  status: "success",
-                  message: "User logged in",
-                  payload: {
-                        ...loggedUser._doc,
-                        password: null
-                  }
-
-            })
-
-      } catch (error) {
-
-            console.log(error);
-
-            res.status(400).json({
-                  status: "error",
-                  message: "Login error",
-                  payload: error
-            })
-
-      }
-
-});
+usersRouter.post("/login", validateLogin, usersController.login);
 
 usersRouter.get("/logout/:id", async (req, res) => {
 

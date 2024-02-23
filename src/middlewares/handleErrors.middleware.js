@@ -1,5 +1,6 @@
 import DatabaseError from "../services/errors/databaseError.js";
 import ValidationError from "../services/errors/validationError.js";
+import ControllerError from "../services/errors/controllerError.js";
 import {
       errorResponse,
       HTTP_STATUS
@@ -36,6 +37,20 @@ function handleErrorsMiddleware(err, req, res, next) {
       }
 
       // Manejo de otros tipos de errores
+      if (err instanceof ControllerError) {
+
+            // Log del error para el servidor
+            console.error(err);
+
+            // Utiliza errorResponse para formatear la respuesta
+            const formattedResponse = errorResponse(err.statusCode, err.message, {
+                  name: err.name,
+                  statusCode: err.statusCode
+            });
+
+            return res.status(err.statusCode).json(formattedResponse);
+
+      }
 
       // Si no se captura el error, se envía un error 500 usando errorResponse
       const formattedResponse = errorResponse(HTTP_STATUS.INTERNAL_SERVER_ERROR, "Internal Server Error", {

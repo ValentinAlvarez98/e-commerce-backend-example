@@ -11,18 +11,35 @@ import {
       validateNotEmptyFields
 } from "../validations.middleware.js";
 
+const loginFields = ["email", "password"];
+
 const registerFields = ["first_name", "last_name", "email", "password"];
 
 const basicDataFields = ["first_name", "last_name"];
 
 const addressFields = ["state", "location", "address", "phone", "name"];
 
+export const validateLogin = [
+
+      validateNotEmptyFields(loginFields),
+
+      validateNotExtraFields(loginFields),
+
+      validateEmail,
+
+      body("password").isLength({
+            min: 8
+      }).withMessage("La contraseña debe tener al menos 8 caracteres"),
+
+      resultCheck
+
+]
 
 export const validateUserToRegister = [
 
       validateNotExtraFields(registerFields),
 
-      validateNotEmptyFields(['first_name', 'last_name', 'email', 'password']),
+      validateNotEmptyFields(registerFields),
 
       validateEmail,
 
