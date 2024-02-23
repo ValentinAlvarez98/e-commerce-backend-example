@@ -148,11 +148,11 @@ export class UsersController {
 
                   const response = await DAOs.users.updateOne(userId, newUser);
 
-                  res.status(200).json(this.formattedResponse.success(200, `Usuario con id ${userId} actualizado`, response));
+                  this.formattedSuccessRes(res, 200, `Usuario con id ${userId} actualizado`, response);
 
             } catch (error) {
 
-                  res.status(400).json(this.formattedResponse.error(400, error.message, error.errors));
+                  this.formattedErrorRes(res, 400, error.message, error.errors);
 
             }
 
@@ -190,11 +190,11 @@ export class UsersController {
 
                   const response = await DAOs.users.updateOne(userId, newUser);
 
-                  res.status(200).json(this.formattedResponse.success(200, `Usuario con id ${userId} actualizado`, response));
+                  this.formattedSuccessRes(res, 200, `Usuario con id ${userId} actualizado`, response);
 
             } catch (error) {
 
-                  res.status(400).json(this.formattedResponse.error(400, error.message, error.errors));
+                  this.formattedErrorRes(res, 400, error.message, error.errors);
 
             }
 
@@ -228,11 +228,11 @@ export class UsersController {
 
                   const response = await DAOs.users.updateOne(userId, newUser);
 
-                  res.status(200).json(this.formattedResponse.success(200, `Usuario con id ${userId} actualizado`, response));
+                  this.formattedSuccessRes(res, 200, `Usuario con id ${userId} actualizado`, response);
 
             } catch (error) {
 
-                  res.status(400).json(this.formattedResponse.error(400, error.message, error.errors));
+                  this.formattedErrorRes(res, 400, error.message, error.errors);
 
             }
 
@@ -246,11 +246,11 @@ export class UsersController {
 
                   const response = await DAOs.users.deleteOne(userId);
 
-                  res.status(200).json(this.formattedResponse.success(200, `Usuario con id ${userId} eliminado`, response));
+                  this.formattedSuccessRes(res, 200, `Usuario con id ${userId} eliminado`, response);
 
             } catch (error) {
 
-                  res.status(400).json(this.formattedResponse.error(400, error.message, error.errors));
+                  this.formattedErrorRes(res, 400, error.message, error.errors);
 
             }
 
@@ -266,7 +266,7 @@ export class UsersController {
 
                         const deletedUsers = await userService.deleteInactiveUsers(inactiveUsersIds);
 
-                        res.status(200).json(this.formattedResponse.success(200, "Usuarios inactivos eliminados", deletedUsers));
+                        this.formattedSuccessRes(res, 200, "Usuarios inactivos eliminados", deletedUsers);
 
                   } else {
 
@@ -276,7 +276,7 @@ export class UsersController {
 
             } catch (error) {
 
-                  res.status(400).json(this.formattedResponse.error(400, error.message, error.errors));
+                  this.formattedErrorRes(res, 400, error.message, error.errors);
 
             }
 
@@ -293,11 +293,11 @@ export class UsersController {
 
                   const user = await userService.loginUser(email, password);
 
-                  res.status(200).json(this.formattedResponse.success(200, "Usuario logueado", user));
+                  this.formattedSuccessRes(res, 200, "Usuario logueado", user);
 
             } catch (error) {
 
-                  res.status(400).json(this.formattedResponse.error(400, error.message, error.errors));
+                  this.formattedErrorRes(res, 400, error.message, error.errors);
 
             }
 
