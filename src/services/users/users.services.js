@@ -11,7 +11,7 @@ export class UserService {
 
             const dbResponse = await DAOs.users.getOneById(id);
 
-            if (dbResponse.error) {
+            if (!dbResponse) {
 
                   throw {
                         statusCode: 404,

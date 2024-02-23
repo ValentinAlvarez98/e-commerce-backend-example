@@ -40,9 +40,9 @@ usersRouter.post("/addOne", validateUserToRegister, usersController.addOne.bind(
 
 usersRouter.put("/updateOne/basicInfo/:id", validateBasicData, loadByParams, usersController.updateOneBasicInfo.bind(usersController));
 
-usersRouter.put("/updateOne/shipping_addresses/:id", validateAddressData, usersController.updateOneShippingAddresses.bind(usersController));
+usersRouter.put("/updateOne/shipping_addresses/:id", validateAddressData, loadByParams, usersController.updateOneShippingAddresses.bind(usersController));
 
-usersRouter.put("/updateOne/billing_addresses/:id", validateAddressData, usersController.updateOneBillingAddresses.bind(usersController));
+usersRouter.put("/updateOne/billing_addresses/:id", validateAddressData, loadByParams, usersController.updateOneBillingAddresses.bind(usersController));
 
 usersRouter.delete("/deleteOne/:id", usersController.deleteOne.bind(usersController));
 

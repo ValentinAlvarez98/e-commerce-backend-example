@@ -127,7 +127,9 @@ export class UsersController {
 
             try {
 
-                  const userId = req.user._id
+                  const user = req.user;
+
+                  req.user = null;
 
                   const newUserData = req.body;
 
@@ -138,17 +140,15 @@ export class UsersController {
                         }
                   }
 
-                  const oldUser = req.user
-
                   const newUser = {
-                        ...oldUser,
+                        ...user,
                         ...newUserData,
                         last_connection: new Date().toISOString()
                   }
 
-                  const response = await DAOs.users.updateOne(userId, newUser);
+                  const response = await DAOs.users.updateOne(user._id, newUser);
 
-                  this.formattedSuccessRes(res, 200, `Usuario con id ${userId} actualizado`, response);
+                  this.formattedSuccessRes(res, 200, `Usuario con id ${user._id} actualizado`, response);
 
             } catch (error) {
 
@@ -162,13 +162,13 @@ export class UsersController {
 
             try {
 
-                  const userId = req.params.id;
+                  const user = req.user;
+
+                  req.user = null;
 
                   const newAddress = req.body;
 
-                  const oldUser = await DAOs.users.getOneById(userId)
-
-                  const oldAddresses = oldUser.shipping_addresses ? oldUser.shipping_addresses : [];
+                  const oldAddresses = user.shipping_addresses ? user.shipping_addresses : [];
 
                   if (oldAddresses.length >= 3) {
 
@@ -183,14 +183,14 @@ export class UsersController {
                   oldAddresses.push(newAddress);
 
                   const newUser = {
-                        ...oldUser,
+                        ...user,
                         shipping_addresses: oldAddresses,
                         last_connection: new Date().toISOString()
                   }
 
-                  const response = await DAOs.users.updateOne(userId, newUser);
+                  const response = await DAOs.users.updateOne(user._id, newUser);
 
-                  this.formattedSuccessRes(res, 200, `Usuario con id ${userId} actualizado`, response);
+                  this.formattedSuccessRes(res, 200, `Usuario con id ${user._id} actualizado`, response);
 
             } catch (error) {
 
@@ -204,31 +204,37 @@ export class UsersController {
 
             try {
 
-                  const userId = req.params.id;
+                  const user = req.user
+
+                  req.user = null;
 
                   const newAddress = req.body;
 
-                  const oldUser = await DAOs.users.getOneById(userId)
-
-                  const oldAddresses = oldUser.billing_addresses;
+                  const oldAddresses = user.billing_addresses;
 
                   if (oldAddresses.length >= 1) {
 
-                        throw new ValidationError(["No se pueden agregar más de 1 direccion de facturación"]);
+                        req.user = null;
+
+                        throw {
+                              statusCode: 400,
+                              message: "Error al agregar dirección de facturación",
+                              errors: ["No se pueden agregar más de 1 dirección de facturación"]
+                        }
 
                   }
 
                   oldAddresses.push(newAddress);
 
                   const newUser = {
-                        ...oldUser,
+                        ...user,
                         billing_addresses: oldAddresses,
                         last_connection: new Date().toISOString()
                   }
 
-                  const response = await DAOs.users.updateOne(userId, newUser);
+                  const response = await DAOs.users.updateOne(user._id, newUser);
 
-                  this.formattedSuccessRes(res, 200, `Usuario con id ${userId} actualizado`, response);
+                  this.formattedSuccessRes(res, 200, `Usuario con id ${user._id} actualizado`, response);
 
             } catch (error) {
 
@@ -270,7 +276,11 @@ export class UsersController {
 
                   } else {
 
-                        throw new ControllerError(400, "No hay usuarios inactivos", ["No hay usuarios inactivos"]);
+                        throw {
+                              statusCode: 404,
+                              message: "Error al eliminar usuarios inactivos",
+                              errors: ["No se encontraron usuarios inactivos"]
+                        }
 
                   }
 
