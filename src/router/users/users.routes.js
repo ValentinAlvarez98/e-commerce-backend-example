@@ -32,11 +32,11 @@ const usersRouter = Router();
 
 usersRouter.get("/getAll", usersController.getAll.bind(usersController));
 
-usersRouter.get("/getOne/:id", usersController.getOneById);
+usersRouter.get("/getOne/:id", usersController.getOneById.bind(usersController));
 
-usersRouter.get("/getOneByEmail", validateEmail, usersController.getOneByEmail);
+usersRouter.get("/getOneByEmail", validateEmail, usersController.getOneByEmail.bind(usersController));
 
-usersRouter.post("/addOne", validateUserToRegister, usersController.addOne);
+usersRouter.post("/addOne", validateUserToRegister, usersController.addOne.bind(usersController));
 
 usersRouter.put("/updateOne/basicInfo/:id", validateBasicData, loadByParams, usersController.updateOneBasicInfo);
 

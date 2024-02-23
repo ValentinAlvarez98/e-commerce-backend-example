@@ -68,11 +68,11 @@ export class UsersController {
 
                   const response = await DAOs.users.getOneById(userId);
 
-                  res.status(200).json(this.formattedResponse.success(200, `Usuario con id ${userId}`, response));
+                  this.formattedSuccessRes(res, 200, `Usuario con id ${userId}`, response);
 
             } catch (error) {
 
-                  res.status(400).json(this.formattedResponse.error(400, error.message, error.errors));
+                  this.formattedErrorRes(res, 400, error.message, error.errors);
 
             }
 
@@ -86,12 +86,12 @@ export class UsersController {
 
                   const response = await DAOs.users.getOneByEmail(email);
 
-                  res.status(200).json(this.formattedResponse.success(200, `Usuario con email ${email}`, response));
+                  this.formattedSuccessRes(res, 200, `Usuario con email ${email}`, response);
 
 
             } catch (error) {
 
-                  res.status(400).json(this.formattedResponse.error(400, error.message, error.errors));
+                  this.formattedErrorRes(res, 400, error.message, error.errors);
 
             }
 
@@ -112,11 +112,11 @@ export class UsersController {
 
                   const response = await DAOs.users.addOne(userToAdd);
 
-                  res.status(201).json(this.formattedResponse.success(201, `Usuario ${enteredUser.email} creado`, response));
+                  this.formattedSuccessRes(res, 201, `Usuario ${response.email} creado`, response);
 
             } catch (error) {
 
-                  res.status(400).json(this.formattedResponse.error(400, error.message, error.errors));
+                  this.formattedErrorRes(res, 400, error.message, error.errors);
 
             }
 
