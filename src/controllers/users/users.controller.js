@@ -107,7 +107,8 @@ export class UsersController {
 
                   const userToAdd = {
                         ...enteredUser,
-                        password: hashedPassword
+                        password: hashedPassword,
+                        last_activity: new Date().toISOString(),
                   }
 
                   const response = await DAOs.users.addOne(userToAdd);
