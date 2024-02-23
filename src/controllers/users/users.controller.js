@@ -140,18 +140,10 @@ export class UsersController {
 
                   const oldUser = req.user
 
-                  const oldConnection = oldUser.last_connection;
-
-                  const newConnection = {
-                        last_login: oldConnection.last_login ? new Date(oldConnection.last_login).toISOString() : null,
-                        last_logout: oldConnection.last_logout ? new Date(oldConnection.last_logout).toISOString() : null,
-                        last_modification: new Date().toISOString()
-                  };
-
                   const newUser = {
                         ...oldUser,
                         ...newUserData,
-                        last_connection: newConnection
+                        last_connection: new Date().toISOString()
                   }
 
                   const response = await DAOs.users.updateOne(userId, newUser);
@@ -190,33 +182,19 @@ export class UsersController {
 
                   oldAddresses.push(newAddress);
 
-                  const oldConnection = oldUser.last_connection;
-
-                  const newConnection = {
-                        last_login: oldConnection.last_login ? new Date(oldConnection.last_login).toISOString() : null,
-                        last_logout: oldConnection.last_logout ? new Date(oldConnection.last_logout).toISOString() : null,
-                        last_modification: new Date().toISOString()
-                  };
-
                   const newUser = {
                         ...oldUser,
                         shipping_addresses: oldAddresses,
-                        last_connection: newConnection
+                        last_connection: new Date().toISOString()
                   }
 
                   const response = await DAOs.users.updateOne(userId, newUser);
 
-                  res.status(200).json({
-                        status: "success",
-                        message: "User updated successfully",
-                        payload: response
-                  })
+                  res.status(200).json(this.formattedResponse.success(200, `Usuario con id ${userId} actualizado`, response));
 
             } catch (error) {
 
-                  const formattedError = errorResponse(error.statusCode, error.message, error.errors);
-
-                  res.status(error.statusCode).json(formattedError);
+                  res.status(400).json(this.formattedResponse.error(400, error.message, error.errors));
 
             }
 
@@ -242,33 +220,19 @@ export class UsersController {
 
                   oldAddresses.push(newAddress);
 
-                  const oldConnection = oldUser.last_connection;
-
-                  const newConnection = {
-                        last_login: oldConnection.last_login ? new Date(oldConnection.last_login).toISOString() : null,
-                        last_logout: oldConnection.last_logout ? new Date(oldConnection.last_logout).toISOString() : null,
-                        last_modification: new Date().toISOString()
-                  };
-
                   const newUser = {
                         ...oldUser,
                         billing_addresses: oldAddresses,
-                        last_connection: newConnection
+                        last_connection: new Date().toISOString()
                   }
 
                   const response = await DAOs.users.updateOne(userId, newUser);
 
-                  res.status(200).json({
-                        status: "success",
-                        message: "User updated successfully",
-                        payload: response
-                  })
+                  res.status(200).json(this.formattedResponse.success(200, `Usuario con id ${userId} actualizado`, response));
 
             } catch (error) {
 
-                  const formattedError = errorResponse(error.statusCode, error.message, error.errors);
-
-                  res.status(error.statusCode).json(formattedError);
+                  res.status(400).json(this.formattedResponse.error(400, error.message, error.errors));
 
             }
 
@@ -282,17 +246,11 @@ export class UsersController {
 
                   const response = await DAOs.users.deleteOne(userId);
 
-                  res.status(200).json({
-                        status: "success",
-                        message: "User deleted",
-                        payload: response
-                  })
+                  res.status(200).json(this.formattedResponse.success(200, `Usuario con id ${userId} eliminado`, response));
 
             } catch (error) {
 
-                  const formattedError = errorResponse(error.statusCode, error.message, error.errors);
-
-                  res.status(error.statusCode).json(formattedError);
+                  res.status(400).json(this.formattedResponse.error(400, error.message, error.errors));
 
             }
 
@@ -308,27 +266,17 @@ export class UsersController {
 
                         const deletedUsers = await userService.deleteInactiveUsers(inactiveUsersIds);
 
-                        res.status(200).json({
-                              status: "success",
-                              message: "Inactive users deleted",
-                              payload: deletedUsers
-                        });
+                        res.status(200).json(this.formattedResponse.success(200, "Usuarios inactivos eliminados", deletedUsers));
 
                   } else {
 
-                        res.status(200).json({
-                              status: "success",
-                              message: "No inactive users found",
-                              payload: {}
-                        });
+                        throw new ControllerError(400, "No hay usuarios inactivos", ["No hay usuarios inactivos"]);
 
                   }
 
             } catch (error) {
 
-                  const formattedError = errorResponse(error.statusCode, error.message, error.errors);
-
-                  res.status(error.statusCode).json(formattedError);
+                  res.status(400).json(this.formattedResponse.error(400, error.message, error.errors));
 
             }
 
@@ -345,15 +293,11 @@ export class UsersController {
 
                   const user = await userService.loginUser(email, password);
 
-                  const preparedResponse = successResponse(200, `El usuario ${user.email} ha iniciado sesión`, user)
-
-                  res.status(200).json(preparedResponse);
+                  res.status(200).json(this.formattedResponse.success(200, "Usuario logueado", user));
 
             } catch (error) {
 
-                  const formattedError = errorResponse(error.statusCode, error.message, error.errors);
-
-                  res.status(error.statusCode).json(formattedError);
+                  res.status(400).json(this.formattedResponse.error(400, error.message, error.errors));
 
             }
 

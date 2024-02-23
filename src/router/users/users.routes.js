@@ -38,17 +38,17 @@ usersRouter.get("/getOneByEmail", validateEmail, usersController.getOneByEmail.b
 
 usersRouter.post("/addOne", validateUserToRegister, usersController.addOne.bind(usersController));
 
-usersRouter.put("/updateOne/basicInfo/:id", validateBasicData, loadByParams, usersController.updateOneBasicInfo);
+usersRouter.put("/updateOne/basicInfo/:id", validateBasicData, loadByParams, usersController.updateOneBasicInfo.bind(usersController));
 
-usersRouter.put("/updateOne/shipping_addresses/:id", validateAddressData, usersController.updateOneShippingAddresses);
+usersRouter.put("/updateOne/shipping_addresses/:id", validateAddressData, usersController.updateOneShippingAddresses.bind(usersController));
 
-usersRouter.put("/updateOne/billing_addresses/:id", validateAddressData, usersController.updateOneBillingAddresses);
+usersRouter.put("/updateOne/billing_addresses/:id", validateAddressData, usersController.updateOneBillingAddresses.bind(usersController));
 
-usersRouter.delete("/deleteOne/:id", usersController.deleteOne);
+usersRouter.delete("/deleteOne/:id", usersController.deleteOne.bind(usersController));
 
-usersRouter.delete("/deleteInactives", usersController.deleteInactives);
+usersRouter.delete("/deleteInactives", usersController.deleteInactives.bind(usersController));
 
-usersRouter.post("/login", validateLogin, usersController.login);
+usersRouter.post("/login", validateLogin, usersController.login.bind(usersController));
 
 usersRouter.get("/logout/:id", async (req, res) => {
 
