@@ -168,7 +168,7 @@ export class UsersController {
 
                   const oldUser = await DAOs.users.getOneById(userId)
 
-                  const oldAddresses = oldUser.shipping_addresses;
+                  const oldAddresses = oldUser.shipping_addresses ? oldUser.shipping_addresses : [];
 
                   if (oldAddresses.length >= 3) {
 
