@@ -29,10 +29,5 @@ router.get("/api/test", (req, res) => {
 
 router.use("/api/users", usersRouter);
 
-router.use("*", (req, res) => {
-
-      res.sendFile(path.join(__dirname, "client", "index.html"))
-
-})
 
 export default router;

@@ -27,12 +27,14 @@ app.use(session({
       saveUninitialized: false,
 }));
 
-app.engine('handlebars', handlebars.engine());
-app.set('view engine', __dirname + '/views');
-app.set('view engine', 'handlebars');
 app.use(express.static(__dirname + '/public'));
-app.use(express.static(__dirname + '/client'));
+app.use(express.static(__dirname + '/client/dist'));
 app.use('/', router);
+app.get('*', (req, res) => {
+
+      res.sendFile(__dirname + '/client/dist/index.html');
+
+});
 
 app.use(handleErrorsMiddleware);
 
