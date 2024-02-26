@@ -2,7 +2,12 @@ import {
       Router
 } from "express";
 
-import UsersController from "../../controllers/users/users.controller.js";
+import {
+      AdministrationUsersController as AdminController
+} from "../../controllers/users/administration/administration.users.controller.js";
+import {
+      ClientUsersController as ClientController
+} from "../../controllers/users/client/client.users.controller.js";
 import DAOs from "../../models/daos/index.daos.js";
 
 import {
@@ -15,6 +20,8 @@ import {
       validateUserToRegister,
       validateBasicData,
       validateAddressData,
+      limitShippingAddress,
+      limitBillingAddress
 } from "../../middlewares/validations/users/users.validations.middleware.js";
 
 import {
@@ -30,30 +37,42 @@ import {
       authMiddleware
 } from "../../middlewares/auth/auth.middleware.js";
 
-const usersController = new UsersController();
+const adminController = new AdminController();
+const clientController = new ClientController();
 
 
 const usersRouter = Router();
 
-usersRouter.get("/getAll", usersController.getAll.bind(usersController));
+/* Funciones administrativas */
+/* ------------------------- */
+usersRouter.get("/getAll", adminController.getAll.bind(adminController));
 
-usersRouter.get("/getOne/:id", usersController.getOneById.bind(usersController));
+usersRouter.get("/getOne/:id", adminController.getOneById.bind(adminController));
 
-usersRouter.get("/getOneByEmail", validateEmail, usersController.getOneByEmail.bind(usersController));
+usersRouter.get("/getOneByEmail", validateEmail, adminController.getOneByEmail.bind(adminController));
 
-usersRouter.post("/addOne", validateUserToRegister, usersController.addOne.bind(usersController));
+usersRouter.delete("/deleteInactives", adminController.deleteInactives.bind(adminController));
+/* ------------------------- */
 
-usersRouter.put("/updateOne/basicInfo/:id", validateBasicData, authMiddleware, loadByJWT, usersController.updateOneBasicInfo.bind(usersController));
+/* Funciones de cliente */
+/* ------------------------- */
+usersRouter.post("/register", validateUserToRegister, clientController.createOne.bind(clientController));
 
-usersRouter.put("/updateOne/shipping_addresses/:id", validateAddressData, authMiddleware, loadByJWT, usersController.updateOneShippingAddresses.bind(usersController));
+usersRouter.post("/login", validateLogin, clientController.loginOne.bind(clientController));
 
-usersRouter.put("/updateOne/billing_addresses/:id", validateAddressData, authMiddleware, loadByJWT, usersController.updateOneBillingAddresses.bind(usersController));
+usersRouter.put("/updateOne/basicInfo", validateBasicData, authMiddleware, loadByJWT, clientController.updateBasicInfo.bind(clientController));
 
-usersRouter.delete("/deleteOne/:id", usersController.deleteOne.bind(usersController));
+usersRouter.put("/updateOne/add/shipping_addresses", validateAddressData, authMiddleware, loadByJWT, limitShippingAddress, clientController.addAddressGeneric.bind(clientController));
 
-usersRouter.delete("/deleteInactives", usersController.deleteInactives.bind(usersController));
+usersRouter.put("/updateOne/add/billing_addresses", validateAddressData, authMiddleware, loadByJWT, limitBillingAddress, clientController.addAddressGeneric.bind(clientController));
 
-usersRouter.post("/login", validateLogin, usersController.login.bind(usersController));
+usersRouter.put("/updateOne/delete/:type/:aId", authMiddleware, loadByJWT, clientController.deleteAddressGeneric.bind(clientController));
+
+usersRouter.put("/updateOne/delete/:type/:aId", authMiddleware, loadByJWT, clientController.deleteAddressGeneric.bind(clientController));
+
+usersRouter.delete("/deleteOne", authMiddleware, clientController.deleteOne.bind(clientController));
+
+/* ------------------------- */
 
 usersRouter.get("/logout/:id", async (req, res) => {
 

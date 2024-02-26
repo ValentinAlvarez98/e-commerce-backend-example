@@ -20,7 +20,7 @@ const TRANSPORTER = nodemailer.createTransport({
 });
 
 export async function sendErrorDBEmail(subject, text, emails) {
-      
+
       try {
 
             await TRANSPORTER.sendMail({
@@ -40,6 +40,48 @@ export async function sendErrorDBEmail(subject, text, emails) {
 
 }
 
+export async function sendInactiveEmail(emails) {
+
+      const HTML = `
+      <h1>Tu cuenta ha sido eliminada por inactividad</h1>
+      <div>
+              <h2>Gracias por haberte registrado</h2>
+      </div>
+      <div>
+                  <p>Esperamos que vuelvas pronto</p>
+      </div>
+
+      <div>
+                        <p>Saludos</p>
+      </div>
+
+      <div>
+
+                        <h3> Como siempre, gracias por confiar en nosotros</h3>
+      </div>
+
+      `;
+
+      const mailOptions = {
+            from: MAIL.user,
+            to: emails,
+            subject: 'Adios',
+            html: HTML,
+      };
+
+      return new Promise((resolve, reject) => {
+            TRANSPORTER.sendMail(mailOptions, (error, info) => {
+                  if (error) {
+                        reject(error);
+                  } else {
+                        resolve(info);
+                  }
+            });
+      });
+
+
+}
+
 export async function sendWelcomeEmail(email) {
 
       const HTML = `
@@ -48,7 +90,7 @@ export async function sendWelcomeEmail(email) {
           <h2>Gracias por registrarte</h2>
       </div>
       <div>
-              <p>Ya podes empezar a comprar</p>
+              <p>Ya podés empezar a comprar</p>
       </div>
 
       <div>
@@ -56,7 +98,7 @@ export async function sendWelcomeEmail(email) {
       </div>
 
       <div>
-                  <h3> Como siempre, gracias por confiar en nosotros</h3>
+                  <h3> Gracias por confiar en nosotros</h3>
       </div>
 
       `;
@@ -120,47 +162,7 @@ export async function sendGoodbyeEmail(email) {
 
 }
 
-export async function sendInactiveEmail(emails) {
 
-      const HTML = `
-      <h1>Tu cuenta ha sido eliminada por inactividad</h1>
-      <div>
-              <h2>Gracias por haberte registrado</h2>
-      </div>
-      <div>
-                  <p>Esperamos que vuelvas pronto</p>
-      </div>
-
-      <div>
-                        <p>Saludos</p>
-      </div>
-
-      <div>
-
-                        <h3> Como siempre, gracias por confiar en nosotros</h3>
-      </div>
-
-      `;
-
-      const mailOptions = {
-            from: MAIL.user,
-            to: emails,
-            subject: 'Adios',
-            html: HTML,
-      };
-
-      return new Promise((resolve, reject) => {
-            TRANSPORTER.sendMail(mailOptions, (error, info) => {
-                  if (error) {
-                        reject(error);
-                  } else {
-                        resolve(info);
-                  }
-            });
-      });
-
-
-}
 
 export async function sendResetPassword(email, token) {
 

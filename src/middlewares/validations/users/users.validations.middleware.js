@@ -4,6 +4,8 @@ import {
       oneOf
 } from "express-validator";
 
+import ValidationError from "../../../services/errors/validationError.js";
+
 import {
       resultCheck,
       validateNotExtraFields,
@@ -17,7 +19,7 @@ const registerFields = ["first_name", "last_name", "email", "password"];
 
 const basicDataFields = ["first_name", "last_name"];
 
-const addressFields = ["state", "location", "address", "phone", "name"];
+const addressFields = ["state", "location", "address", "phone", "name", "type"];
 
 export const validateLogin = [
 
@@ -102,5 +104,35 @@ export const validateAddressData = [
             min: 4
       }).withMessage("El nombre debe tener al menos 4 caracteres"),
 
+      body("type").notEmpty().withMessage("El tipo de dirección es obligatorio").isIn(["shipping", "billing"]).withMessage("El tipo de dirección no es válido"),
+
       resultCheck
 ];
+
+export const limitShippingAddress = (req, res, next) => {
+
+      const user = req.user;
+
+      if (user.shipping_addresses.length >= 3) {
+
+            return next(new ValidationError(["No se pueden agregar más de 3 direcciones de envío"]));
+
+      }
+
+      next();
+
+}
+
+export const limitBillingAddress = (req, res, next) => {
+
+      const user = req.user;
+
+      if (user.billing_addresses.length >= 1) {
+
+            return next(new ValidationError(["No se pueden agregar más de 1 dirección de facturación"]));
+
+      }
+
+      next()
+
+}
