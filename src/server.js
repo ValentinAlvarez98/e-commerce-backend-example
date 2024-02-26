@@ -31,6 +31,7 @@ app.engine('handlebars', handlebars.engine());
 app.set('view engine', __dirname + '/views');
 app.set('view engine', 'handlebars');
 app.use(express.static(__dirname + '/public'));
+app.use(express.static(__dirname + '/client'));
 app.use('/', router);
 
 app.use(handleErrorsMiddleware);

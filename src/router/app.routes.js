@@ -31,7 +31,7 @@ router.use("/api/users", usersRouter);
 
 router.use("*", (req, res) => {
 
-      res.redirect("/home");
+      res.sendFile(path.join(__dirname, "client", "index.html"))
 
 })
 
