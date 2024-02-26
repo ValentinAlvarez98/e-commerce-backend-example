@@ -3,9 +3,11 @@ import {
       compareHash,
       createHash
 } from "../../utils/bcrypt/bcrypt.utils.js";
+import {
+      generateJWT
+} from "../../utils/JWT/jwt.utils.js";
 
 export class UserService {
-
 
       async loadUser(id) {
 
@@ -22,6 +24,24 @@ export class UserService {
             }
 
             return dbResponse;
+
+      }
+
+      async generateToken(id) {
+
+            const token = generateJWT(id);
+
+            if (!token) {
+
+                  throw {
+                        statusCode: 404,
+                        message: "Error al crear el token",
+                        errors: ["No se pudo crear el token"],
+                  }
+
+            }
+
+            return token;
 
       }
 

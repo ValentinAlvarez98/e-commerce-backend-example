@@ -33,3 +33,33 @@ export async function loadUserByParams(req, res, next) {
       }
 
 }
+
+export async function loadUserByJWT(req, res, next) {
+
+      try {
+
+            const userId = req._id;
+
+            if (!userId) {
+
+                  throw {
+                        statusCode: 500,
+                        message: "Error del servidor al obtener el usuario",
+                        errors: ["El id del usuario no se ha encontrado"],
+                  }
+
+            }
+
+            const user = await new UserService().loadUser(userId);
+
+            req.user = user;
+
+            next();
+
+      } catch (error) {
+
+            next(new ValidationError(error));
+
+      }
+
+}

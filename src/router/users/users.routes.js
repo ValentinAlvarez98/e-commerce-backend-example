@@ -22,8 +22,13 @@ import {
 } from "../../middlewares/validations/validations.middleware.js";
 
 import {
-      loadUserByParams as loadByParams
+      loadUserByParams as loadByParams,
+      loadUserByJWT as loadByJWT
 } from "../../middlewares/loads/users/loadsUsers.middleware.js";
+
+import {
+      authMiddleware
+} from "../../middlewares/auth/auth.middleware.js";
 
 const usersController = new UsersController();
 
@@ -38,11 +43,11 @@ usersRouter.get("/getOneByEmail", validateEmail, usersController.getOneByEmail.b
 
 usersRouter.post("/addOne", validateUserToRegister, usersController.addOne.bind(usersController));
 
-usersRouter.put("/updateOne/basicInfo/:id", validateBasicData, loadByParams, usersController.updateOneBasicInfo.bind(usersController));
+usersRouter.put("/updateOne/basicInfo/:id", validateBasicData, authMiddleware, loadByJWT, usersController.updateOneBasicInfo.bind(usersController));
 
-usersRouter.put("/updateOne/shipping_addresses/:id", validateAddressData, loadByParams, usersController.updateOneShippingAddresses.bind(usersController));
+usersRouter.put("/updateOne/shipping_addresses/:id", validateAddressData, authMiddleware, loadByJWT, usersController.updateOneShippingAddresses.bind(usersController));
 
-usersRouter.put("/updateOne/billing_addresses/:id", validateAddressData, loadByParams, usersController.updateOneBillingAddresses.bind(usersController));
+usersRouter.put("/updateOne/billing_addresses/:id", validateAddressData, authMiddleware, loadByJWT, usersController.updateOneBillingAddresses.bind(usersController));
 
 usersRouter.delete("/deleteOne/:id", usersController.deleteOne.bind(usersController));
 

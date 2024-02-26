@@ -303,7 +303,21 @@ export class UsersController {
 
                   const user = await userService.loginUser(email, password);
 
-                  this.formattedSuccessRes(res, 200, "Usuario logueado", user);
+                  const token = await userService.generateToken(user._id);
+
+                  const userWithToken = {
+                        ...user._doc,
+                        token
+                  }
+
+                  // A probar si funciona 
+                  res.cookie("token", token, {
+                        httpOnly: true,
+                        secure: true,
+                        sameSite: "none"
+                  })
+
+                  this.formattedSuccessRes(res, 200, "Usuario logueado", userWithToken);
 
             } catch (error) {
 
