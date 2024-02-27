@@ -11,11 +11,7 @@ export const authMiddleware = (req, res, next) => {
 
       if (!authHeader) {
 
-            throw new ValidationError({
-                  statusCode: 401,
-                  message: "Error de autenticación",
-                  errors: ["El token es requerido"],
-            });
+            throw new ValidationError(401, ["El header de autenticación es requerido"]);
       }
 
       const token = authHeader.split(' ')[1];
