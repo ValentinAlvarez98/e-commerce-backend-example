@@ -31,23 +31,21 @@ export const authMiddleware = (req, res, next) => {
 
       const key = CONFIG.KEY;
 
-      try {
+      const decoded = verifyJWT(token);
 
-            const decoded = verifyJWT(token);
-
-            req._id = decoded;
-
-            next();
-
-      } catch (error) {
-
+      if (!decoded) {
             throw {
                   statusCode: 403,
                   message: "Acceso denegado",
                   errors: ["Token inválido"]
             }
-
       }
+
+
+
+      req._id = decoded;
+
+      next();
 
 
 }
