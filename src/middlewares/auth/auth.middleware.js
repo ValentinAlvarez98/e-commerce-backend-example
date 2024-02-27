@@ -23,17 +23,17 @@ export const authMiddleware = (req, res, next) => {
 
       }
 
-      const decoded = verifyJWT(token);
+      try {
 
-      if (!decoded) {
+            const decoded = verifyJWT(token);
+
+            req._id = decoded;
+
+            next();
+
+      } catch (error) {
             throw new InvalidError(["El token no es valido"]);
       }
-
-
-
-      req._id = decoded;
-
-      next();
 
 
 }
