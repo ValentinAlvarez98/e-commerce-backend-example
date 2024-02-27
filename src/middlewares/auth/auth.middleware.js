@@ -29,8 +29,6 @@ export const authMiddleware = (req, res, next) => {
 
       }
 
-      const key = CONFIG.KEY;
-
       const decoded = verifyJWT(token);
 
       if (!decoded) {
