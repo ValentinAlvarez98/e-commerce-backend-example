@@ -15,7 +15,11 @@ export class UsersDAO {
 
             } catch (error) {
 
-                  throw new DatabaseError("Error al obtener los usuarios", error);
+                  throw {
+                        statusCode: 404,
+                        message: "Error al obtener los usuarios",
+                        errors: error
+                  }
 
             }
 
@@ -32,7 +36,11 @@ export class UsersDAO {
 
             } catch (error) {
 
-                  throw new DatabaseError("Error al obtener el usuario por su ID", error);
+                  throw {
+                        statusCode: 404,
+                        message: "Error al obtener el usuario",
+                        errors: error
+                  }
 
             }
 
@@ -52,7 +60,11 @@ export class UsersDAO {
 
             } catch (error) {
 
-                  throw new DatabaseError("Error al obtener el usuario por su email", error);
+                  throw {
+                        statusCode: 404,
+                        message: "Error al obtener el usuario",
+                        errors: error
+                  }
 
             }
 
@@ -62,15 +74,27 @@ export class UsersDAO {
 
             try {
 
-                  const newUser = new usersModel(user);
-
-                  await newUser.save();
+                  const newUser = await usersModel.create(user);
 
                   return newUser;
 
             } catch (error) {
 
-                  throw new DatabaseError("Error al agregar el usuario", error);
+                  if (error.code === 11000) {
+
+                        throw {
+                              statusCode: 400,
+                              message: "Error al crear el usuario",
+                              errors: ["El email ingresado ya se encuentra registrado"]
+                        }
+
+                  }
+
+                  throw {
+                        statusCode: 404,
+                        message: "Error al crear el usuario",
+                        errors: error
+                  }
 
             }
 
@@ -88,7 +112,11 @@ export class UsersDAO {
 
             } catch (error) {
 
-                  throw new DatabaseError("Error al actualizar el usuario", error);
+                  throw {
+                        statusCode: 404,
+                        message: "Error al actualizar el usuario",
+                        errors: error
+                  }
 
             }
 
@@ -104,7 +132,11 @@ export class UsersDAO {
 
             } catch (error) {
 
-                  throw new DatabaseError("Error al eliminar el usuario", error);
+                  throw {
+                        statusCode: 404,
+                        message: "Error al eliminar el usuario",
+                        errors: error
+                  }
 
             }
 
@@ -124,7 +156,11 @@ export class UsersDAO {
 
             } catch (error) {
 
-                  throw new DatabaseError("Error al eliminar los usuarios", error);
+                  throw {
+                        statusCode: 404,
+                        message: "Error al eliminar los usuarios",
+                        errors: error
+                  }
 
             }
 

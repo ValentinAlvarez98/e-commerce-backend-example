@@ -15,7 +15,7 @@ export const errorResponse = (statusCode, message, error) => {
             status: "error",
             statusCode: statusCode,
             message: message,
-            error: error,
+            errors: error,
       }
 
 }

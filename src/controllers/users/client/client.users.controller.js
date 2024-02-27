@@ -29,9 +29,9 @@ export class ClientUsersController {
 
       formattedErrorRes(res, statusCode, message, error) {
 
-            const response = errorResponse(statusCode, message, error);
+            const response = errorResponse(statusCode ? statusCode : 500, message, error);
 
-            res.status(statusCode).json(response);
+            res.status(statusCode ? statusCode : 500).json(response);
 
       }
 

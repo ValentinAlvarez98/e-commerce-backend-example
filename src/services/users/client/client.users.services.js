@@ -18,6 +18,12 @@ import {
       sendGoodbyeEmail
 } from "../../../utils/mailing/mailing.utils.js";
 
+import {
+      AdministrationUserService
+} from "../administration/administration.users.services.js";
+
+const adminService = new AdministrationUserService();
+
 export class ClientUserService {
 
       async loadUser(id) {

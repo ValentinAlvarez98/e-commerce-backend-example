@@ -54,8 +54,8 @@ function handleErrorsMiddleware(err, req, res, next) {
 
       // Si no se captura el error, se envía un error 500 usando errorResponse
       const formattedResponse = errorResponse(HTTP_STATUS.INTERNAL_SERVER_ERROR, "Internal Server Error", {
-            message: "An uncaptured error has occurred",
-            error: err ? err : "No error message"
+            message: "Error no capturado",
+            errors: err ? err : "No se ha recibido un mensaje en el error"
       });
 
       return res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json(formattedResponse);
