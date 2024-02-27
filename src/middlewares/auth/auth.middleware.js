@@ -3,7 +3,8 @@ import {
       verifyJWT
 } from "../../utils/JWT/jwt.utils.js";
 
-import ValidationError from "../../services/errors/validationError.js";
+import AuthError from "../../services/errors/authorizationError.js";
+import InvalidError from "../../services/errors/invalidError.js";
 
 export const authMiddleware = (req, res, next) => {
 
@@ -11,29 +12,21 @@ export const authMiddleware = (req, res, next) => {
 
       if (!authHeader) {
 
-            throw new ValidationError(401, ["El header de autenticación es requerido"]);
+            throw new AuthError(["El header de autorización es requerido"]);
       }
 
       const token = authHeader.split(' ')[1];
 
       if (!token) {
 
-            throw {
-                  statusCode: 401,
-                  message: "Error de autenticación",
-                  errors: ["El token es requerido"],
-            }
+            throw new AuthError(["El token es requerido"]);
 
       }
 
       const decoded = verifyJWT(token);
 
       if (!decoded) {
-            throw {
-                  statusCode: 403,
-                  message: "Acceso denegado",
-                  errors: ["Token inválido"]
-            }
+            throw new InvalidError(["El token no es valido"]);
       }
 
 
