@@ -18,7 +18,9 @@ const SECRET = CONFIG.SECRET;
 
 MongoManager.start();
 
-const allowedOrigins = ['http://localhost:5173', 'http://localhost:5173/#', 'https://valentinalvarez98.github.io', 'http://localhost:8080', 'http://localhost:3000', "https://pf-alvarez-react-firebase.vercel.app",
+const allowedOrigins = ['http://localhost:5173', 'https://localhost:5173',
+      'http://localhost:5173/#', 'https://localhost:5173/#',
+      'https://valentinalvarez98.github.io', 'http://localhost:8080', 'http://localhost:3000', "https://pf-alvarez-react-firebase.vercel.app",
       "https://pfalvarez-production.up.railway.app",
       "https://pf-alvarez-react-firebase-a0g5qco1l-valentinalvarez98s-projects.vercel.app"
 ];
