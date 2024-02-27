@@ -3,18 +3,19 @@ import {
       verifyJWT
 } from "../../utils/JWT/jwt.utils.js";
 
+import ValidationError from "../../services/errors/validationError.js";
+
 export const authMiddleware = (req, res, next) => {
 
       const authHeader = req.headers['authorization'];
 
       if (!authHeader) {
 
-            throw {
-                  statusCode: 400,
-                  message: "Error en la petición",
-                  errors: ["El header de autenticación es requerido"],
-            }
-
+            throw new ValidationError({
+                  statusCode: 401,
+                  message: "Error de autenticación",
+                  errors: ["El token es requerido"],
+            });
       }
 
       const token = authHeader.split(' ')[1];
