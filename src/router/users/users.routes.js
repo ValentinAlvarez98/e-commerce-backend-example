@@ -68,8 +68,6 @@ usersRouter.put("/updateOne/add/billing_addresses", validateAddressData, authMid
 
 usersRouter.put("/updateOne/delete/:type/:aId", authMiddleware, loadByJWT, clientController.deleteAddressGeneric.bind(clientController));
 
-usersRouter.put("/updateOne/delete/:type/:aId", authMiddleware, loadByJWT, clientController.deleteAddressGeneric.bind(clientController));
-
 usersRouter.delete("/deleteOne", authMiddleware, clientController.deleteOne.bind(clientController));
 
 /* ------------------------- */
