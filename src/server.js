@@ -18,18 +18,7 @@ const SECRET = CONFIG.SECRET;
 
 MongoManager.start();
 
-app.use(express.json());
-app.use(express.urlencoded({
-      extended: true
-}));
-
-app.use(session({
-      secret: SECRET,
-      resave: false,
-      saveUninitialized: false,
-}));
-
-const allowedOrigins = ['http://localhost:5173', 'https://valentinalvarez98.github.io', 'http://localhost:8080', 'http://localhost:3000', "https://pf-alvarez-react-firebase.vercel.app",
+const allowedOrigins = ['http://localhost:5173', 'http://localhost:5173/#', 'https://valentinalvarez98.github.io', 'http://localhost:8080', 'http://localhost:3000', "https://pf-alvarez-react-firebase.vercel.app",
       "https://pfalvarez-production.up.railway.app",
       "https://pf-alvarez-react-firebase-a0g5qco1l-valentinalvarez98s-projects.vercel.app"
 ];
@@ -48,6 +37,19 @@ app.use(cors({
       allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'Accept', 'Origin'],
       methods: ['GET', 'POST', 'PUT', 'DELETE']
 }));
+
+app.use(express.json());
+app.use(express.urlencoded({
+      extended: true
+}));
+
+app.use(session({
+      secret: SECRET,
+      resave: false,
+      saveUninitialized: false,
+}));
+
+
 
 app.use(express.static(__dirname + '/public'));
 app.use(express.static(__dirname + '/client/dist'));
