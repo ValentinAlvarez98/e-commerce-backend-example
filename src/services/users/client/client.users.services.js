@@ -123,7 +123,9 @@ export class ClientUserService {
 
             }
 
-            sendWelcomeEmail(dbResponse.email);
+            const completeName = `${userToCreate.first_name} ${userToCreate.last_name}`
+
+            sendWelcomeEmail(dbResponse.email, completeName);
 
             return dbResponse;
 
