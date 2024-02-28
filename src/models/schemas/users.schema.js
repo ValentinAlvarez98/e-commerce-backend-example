@@ -52,7 +52,7 @@ const usersSchema = new mongoose.Schema({
             validate: [shippingLimit, '{PATH} exceeds the limit of 3'],
       },
 
-      billing_addresses: {
+      billing_address: {
             type: [{
                   state: {
                         type: String,

@@ -64,7 +64,7 @@ usersRouter.put("/updateOne/basicInfo", validateBasicData, authMiddleware, loadB
 
 usersRouter.put("/updateOne/add/shipping_addresses", validateAddressData, authMiddleware, loadByJWT, limitShippingAddress, clientController.addAddressGeneric.bind(clientController));
 
-usersRouter.put("/updateOne/add/billing_addresses", validateAddressData, authMiddleware, loadByJWT, limitBillingAddress, clientController.addAddressGeneric.bind(clientController));
+usersRouter.put("/updateOne/add/billing_address", validateAddressData, authMiddleware, loadByJWT, limitBillingAddress, clientController.addAddressGeneric.bind(clientController));
 
 usersRouter.put("/updateOne/delete/:type/:aId", authMiddleware, loadByJWT, clientController.deleteAddressGeneric.bind(clientController));
 

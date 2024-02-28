@@ -184,7 +184,7 @@ export class ClientUserService {
 
       async addAddress(user, newAddress, addressType) {
 
-            const addressField = addressType === 'shipping' ? 'shipping_addresses' : 'billing_addresses';
+            const addressField = addressType === 'shipping' ? 'shipping_addresses' : 'billing_address';
 
             const oldAddresses = user[addressField] ? user[addressField] : [];
 
@@ -214,7 +214,7 @@ export class ClientUserService {
 
       async deleteAddress(user, addressId, addressType) {
 
-            const addressField = addressType === 'shipping' ? 'shipping_addresses' : 'billing_addresses';
+            const addressField = addressType === 'shipping' ? 'shipping_addresses' : 'billing_address';
 
             const newAddresses = user[addressField].filter(address => address._id.toString() !== addressId);
 
