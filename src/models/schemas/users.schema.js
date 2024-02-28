@@ -53,7 +53,7 @@ const usersSchema = new mongoose.Schema({
       },
 
       billing_address: {
-            type: [{
+            type: {
                   state: {
                         type: String,
                         required: [true, 'State is required'],
@@ -74,7 +74,7 @@ const usersSchema = new mongoose.Schema({
                         type: String,
                         required: [true, 'Contact name is required'],
                   },
-            }],
+            },
             validate: [billingLimit, '{PATH} exceeds the limit of 1'],
       },
 
