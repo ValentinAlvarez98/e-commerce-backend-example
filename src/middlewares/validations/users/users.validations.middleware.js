@@ -127,7 +127,7 @@ export const limitBillingAddress = (req, res, next) => {
 
       const user = req.user;
 
-      if (user.billing_addresses.length >= 1) {
+      if (user.billing_address.length >= 1) {
 
             return next(new ValidationError(["No se pueden agregar más de 1 dirección de facturación"]));
 
