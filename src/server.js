@@ -53,7 +53,7 @@ app.use(session({
 
 
 
-app.use(express.static(__dirname + '/public'));
+app.use(express.static(__dirname + '/client/dist/assets'));
 app.use(express.static(__dirname + '/client/dist'));
 app.use('/', router);
 app.get('*', (req, res) => {
