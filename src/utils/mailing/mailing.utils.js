@@ -84,94 +84,13 @@ export async function sendInactiveEmail(emails) {
 
 export async function sendWelcomeEmail(email, userName) {
 
-      const HTML = `
-      < !DOCTYPE html >
-            <
-            html lang = "es" >
-            <
-            head >
-            <
-            meta charset = "UTF-8" >
-            <
-            meta name = "viewport"
-      content = "width=device-width, initial-scale=1.0" >
-            <
-            style >
-            body {
-                  font - family: 'Helvetica', 'Arial', sans - serif;
-                  background - color: #f7f7f7;
-                  margin: 0;
-                  padding: 0;
-                  color: #333;
-
-    }
-
-    .container {
-
-      max-width: 600px;
-
-      margin: 20px auto;
-
-      background: # fff;
-                  border - radius: 8 px;
-                  overflow: hidden;
-                  box - shadow: 0 4 px 6 px rgba(0, 0, 0, 0.1);
-            }
-            .header {
-                  background - color: #4CAF50;
-
-      color: # ffffff;
-                  padding: 20 px;
-                  text - align: center;
-            }
-            .content {
-                  padding: 20 px;
-            }
-            .footer {
-                  background - color: #eee;
-                  padding: 10 px 20 px;
-                  text - align: center;
-                  font - size: 12 px;
-            }
-            .button {
-                  display: inline - block;
-                  background - color: #4CAF50;
-
-      color: # ffffff;
-                  padding: 10 px 15 px;
-                  text - decoration: none;
-                  border - radius: 5 px;
-                  margin - top: 15 px;
-            } <
-            /style> <
-            /head> <
-            body >
-            <
-            div class = "container" >
-            <
-            div class = "header" >
-            <
-            h1 > Bienvenido a EasyClick < /h1> <
-            /div> <
-            div class = "content" >
-            <
-            p > Estimado ${userName}, < /p> <
-            p > ¡Estamos encantados de darte la bienvenida a EasyClick!Aquí encontrarás una amplia variedad de muebles de encastre para tu hogar, tu mascota y para exhibir tus productos favoritos, todos hechos con amor y madera reciclada. < /p> <
-            p > Nuestra misión es ofrecerte soluciones prácticas, sostenibles y de diseño que no solo embellezcan tu espacio, sino que también cuiden de nuestro planeta. < /p> <
-            a href = "https://test-deploy-front-seven.vercel.app/#/"
-      class = "button" > Explora Nuestra Colección < /a> <
-            p > Si tienes preguntas o necesitas asistencia, no dudes en responder este correo o visitar nuestra sección de contacto en nuestra página web. < /p> <
-            p > Gracias por elegir sostenibilidad, < br > El Equipo de EasyClick < /p> <
-            /div> <
-            div class = "footer" >
-            <
-            p > Síguenos en nuestras redes sociales para estar al día con las últimas novedades y ofertas. < /p> <
-            /div> <
-            /div> <
-            /body> <
-            /html>
-
-      `;
+      const HTML = `<div style = "max-width: 600px; margin: 20px auto; background: #fff; border-radius: 8px; overflow: hidden; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);" >
+            <div style = "background-color: #4CAF50; color: #ffffff; padding: 20px; text-align: center;" >
+            <h1> Bienvenido a EasyClick </h1>
+            </div> <div style = "padding: 20px;" >
+            <p> Estimado ${userName}, </p> <p> ¡Estamos encantados de darte la bienvenida a EasyClick!Aquí encontrarás una amplia variedad de muebles de encastre para tu hogar, tu mascota y para exhibir tus productos favoritos, todos hechos con amor y madera reciclada. </p> <p> Nuestra misión es ofrecerte soluciones prácticas, sostenibles y de diseño que no solo embellezcan tu espacio, sino que también cuiden de nuestro planeta. </p> <a href = "https://test-deploy-front-seven.vercel.app/#/"
+      style = "display: inline-block; background-color: #4CAF50; color: #ffffff; padding: 10px 15px; text-decoration: none; border-radius: 5px; margin-top: 15px;" > Explora Nuestra Colección </a> <p> Si tienes preguntas o necesitas asistencia, no dudes en responder este correo o visitar nuestra sección de contacto en nuestra página web. </p> <p> Gracias por elegir sostenibilidad, El Equipo de EasyClick </p> </div> <div style = "background-color: #eee; padding: 10px 20px; text-align: center; font-size: 12px;" >
+            <p> Síguenos en nuestras redes sociales para estar al día con las últimas novedades y ofertas. </p> </div> </div>`;
 
       const mailOptions = {
             from: MAIL.user,
