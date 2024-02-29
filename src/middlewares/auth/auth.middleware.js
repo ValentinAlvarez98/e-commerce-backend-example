@@ -40,17 +40,27 @@ export const authMiddleware = (req, res, next) => {
 
 export const authFromCookieMiddleware = (req, res, next) => {
 
-      const token = req.cookies.token;
-
-      if (!token) {
-
-            throw new AuthError(["No se ha encontrado el token en las cookies"]);
-
-      }
-
       try {
 
+            const token = req.cookies.token;
+
+            if (!token) {
+
+                  throw new AuthError(["No se ha encontrado el token en las cookies"]);
+
+
+            }
+
+            req.token = token;
+
+
+
             const decoded = verifyJWT(token);
+
+            if (!decoded) {
+                  throw new InvalidError(["El token no es valido"]);
+
+            }
 
             req._id = decoded;
 
@@ -59,7 +69,9 @@ export const authFromCookieMiddleware = (req, res, next) => {
             next();
 
       } catch (error) {
-            throw new InvalidError(["El token no es valido"]);
+            throw new AuthError(["No se ha podido verificar el token"]);
       }
+
+
 
 }

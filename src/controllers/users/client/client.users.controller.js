@@ -67,7 +67,8 @@ export class ClientUsersController {
                   res.cookie("token", result.token, {
                         httpOnly: true,
                         secure: true,
-                        sameSite: "none"
+                        sameSite: "none",
+                        maxAge: 1000 * 60 * 60 * 24 * 7
                   });
 
                   this.formattedSuccessRes(res, 200, `Usuario ${result.user.email}, inició sesión correctamente`, result);
@@ -105,6 +106,24 @@ export class ClientUsersController {
                   }
 
                   this.formattedSuccessRes(res, 200, `Usuario ${user.email}, sesión activa`, response);
+
+            } catch (error) {
+
+                  this.formattedErrorRes(res, error.statusCode, error.message, error.errors);
+
+            }
+
+      }
+
+      async logout(req, res, next) {
+
+            try {
+
+                  res.clearCookie("token");
+
+                  this.formattedSuccessRes(res, 200, `Sesión cerrada`, {
+                        sessionStatus: "closed"
+                  });
 
             } catch (error) {
 
