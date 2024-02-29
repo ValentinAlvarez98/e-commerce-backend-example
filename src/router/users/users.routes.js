@@ -34,7 +34,8 @@ import {
 } from "../../middlewares/loads/users/loadsUsers.middleware.js";
 
 import {
-      authMiddleware
+      authMiddleware,
+      authFromCookieMiddleware as authFromCookie
 } from "../../middlewares/auth/auth.middleware.js";
 
 const adminController = new AdminController();
@@ -59,6 +60,8 @@ usersRouter.delete("/deleteInactives", adminController.deleteInactives.bind(admi
 usersRouter.post("/register", validateUserToRegister, clientController.createOne.bind(clientController));
 
 usersRouter.post("/login", validateLogin, clientController.loginOne.bind(clientController));
+
+usersRouter.get("/checkSession", authFromCookie, loadByJWT, clientController.checkSession.bind(clientController));
 
 usersRouter.put("/updateOne/basicInfo", validateBasicData, authMiddleware, loadByJWT, clientController.updateBasicInfo.bind(clientController));
 

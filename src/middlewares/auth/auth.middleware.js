@@ -37,3 +37,27 @@ export const authMiddleware = (req, res, next) => {
 
 
 }
+
+export const authFromCookieMiddleware = (req, res, next) => {
+
+      const token = req.cookies.token;
+
+      if (!token) {
+
+            throw new AuthError(["No se ha encontrado el token en las cookies"]);
+
+      }
+
+      try {
+
+            const decoded = verifyJWT(token);
+
+            req._id = decoded;
+
+            next();
+
+      } catch (error) {
+            throw new InvalidError(["El token no es valido"]);
+      }
+
+}

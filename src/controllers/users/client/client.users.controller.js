@@ -87,6 +87,22 @@ export class ClientUsersController {
 
       }
 
+      async checkSession(req, res, next) {
+
+            try {
+
+                  const user = req.user;
+
+                  this.formattedSuccessRes(res, 200, `Usuario ${user.email}, sesión activa`, user);
+
+            } catch (error) {
+
+                  this.formattedErrorRes(res, error.statusCode, error.message, error.errors);
+
+            }
+
+      }
+
       async updateBasicInfo(req, res, next) {
 
             try {
