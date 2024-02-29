@@ -93,7 +93,18 @@ export class ClientUsersController {
 
                   const user = req.user;
 
-                  this.formattedSuccessRes(res, 200, `Usuario ${user.email}, sesión activa`, user);
+                  const token = req.token;
+
+                  req.user = null;
+
+                  req.token = null;
+
+                  const response = {
+                        user: user,
+                        token: token
+                  }
+
+                  this.formattedSuccessRes(res, 200, `Usuario ${user.email}, sesión activa`, response);
 
             } catch (error) {
 

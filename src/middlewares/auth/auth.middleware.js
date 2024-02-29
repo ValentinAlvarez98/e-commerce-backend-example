@@ -54,6 +54,8 @@ export const authFromCookieMiddleware = (req, res, next) => {
 
             req._id = decoded;
 
+            req.token = token;
+
             next();
 
       } catch (error) {
