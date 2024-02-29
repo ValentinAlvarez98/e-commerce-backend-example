@@ -7,7 +7,7 @@ import viewsRouter from "./views/views.routes.js";
 
 const router = Router();
 
-router.use("/", viewsRouter);
+router.use("/views", viewsRouter);
 
 router.get("/api/test", (req, res) => {
 
