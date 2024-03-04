@@ -15,5 +15,8 @@ export async function configureRateLimiter() { // Asegúrate de exportar la func
             max: 100, // límite de 100 solicitudes por IP por ventana de tiempo
             standardHeaders: true, // devuelve información de límite de tasa en los encabezados 'RateLimit-*'
             legacyHeaders: false, // deshabilita los encabezados 'X-RateLimit-*'
+
+            // configurar el mensaje de error
+            message: 'Demasiadas solicitudes desde esta dirección IP, por favor, inténtelo de nuevo después de 15 minutos',
       });
 }
