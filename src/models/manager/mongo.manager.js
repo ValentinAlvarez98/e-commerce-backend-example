@@ -18,7 +18,7 @@ export class MongoManager {
 
                   await mongoose.connect(MONGO_URL);
 
-                  console.log("Base de datos conectada");
+                  console.log("Base de datos MongoDB, conectada");
 
             } catch (error) {
 

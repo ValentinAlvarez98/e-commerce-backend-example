@@ -5,29 +5,20 @@ import {
 import usersRouter from "./users/users.routes.js";
 import viewsRouter from "./views/views.routes.js";
 
-const router = Router();
+import {
+      configureRateLimiter
+} from "../middlewares/rateLimiter/rateLimiter.middleware.js";
 
-router.use("/views", viewsRouter);
+// Cambiado para aceptar `app` como argumento y hacer la función asíncrona
+async function setupRoutes(app) {
+      const router = Router();
+      const rateLimiter = await configureRateLimiter(); // Espera a que el rateLimiter esté listo
 
-router.get("/api/test", (req, res) => {
+      router.use("/views", viewsRouter);
+      router.use('/api', rateLimiter); // Aplica el rateLimiter configurado
+      router.use("/api/users", usersRouter);
 
-      try {
+      app.use('/', router); // Aplica el router a la aplicación Express
+}
 
-            res.status(200).json({
-                  message: "Test route"
-            });
-
-      } catch (error) {
-
-            res.status(400).json({
-                  message: "Test route error"
-            });
-
-      }
-
-})
-
-router.use("/api/users", usersRouter);
-
-
-export default router;
+export default setupRoutes;

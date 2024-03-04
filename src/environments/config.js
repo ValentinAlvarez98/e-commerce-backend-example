@@ -26,6 +26,11 @@ const CONFIG = {
             password: process.env.MAIL_PASS
       },
       MAIL_HOST: process.env.MAIL_HOST,
+      REDIS: {
+            host: process.env.REDIS_HOST,
+            port: process.env.REDIS_PORT,
+            password: process.env.REDIS_PASSWORD
+      }
 };
 
 export default CONFIG;
