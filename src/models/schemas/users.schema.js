@@ -48,7 +48,7 @@ const usersSchema = new mongoose.Schema({
                         type: String,
                         required: [true, 'Contact name is required'],
                   },
-                  comentary: {
+                  commentary: {
                         type: String,
                   }
             }],

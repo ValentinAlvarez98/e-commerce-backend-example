@@ -4,53 +4,56 @@ import CONFIG from "../../environments/config.js";
 
 const productsCollection = CONFIG.MONGO_COLLECTIONS.products;
 
-const productsSchema = new mongoose.Schema({
+const productVariantSchema = new mongoose.Schema({
+      size: {
+            type: String,
+            required: true,
+      },
+      color: {
+            type: String,
+            required: true,
+      },
+      stock: {
+            type: Number,
+            required: true,
+            min: 0, // Asegura que el stock no sea negativo
+      },
+});
 
+const productSizeSchema = new mongoose.Schema({
+      size: {
+            type: String,
+            required: true,
+      },
+      variants: [productVariantSchema], // Array de variantes, combinando color y stock
+}, {
+      _id: false
+});
+
+const productsSchema = new mongoose.Schema({
       title: {
             type: String,
             required: true,
       },
-
       description: {
             type: String,
             required: true,
       },
-
       code: {
             type: String,
             required: true,
+            unique: true, // Asegura que el código del producto sea único
       },
-
       price: {
             type: Number,
             required: true,
       },
-
-      discount: {
-            type: String,
-      },
-
       status: {
             type: Boolean,
             required: true,
             default: true,
       },
-
-      stock: {
-            type: Number,
-            required: true,
-      },
-
-      thumbnails: {
-            type: Array,
-            required: false,
-      },
-
-      color: {
-            type: String,
-            required: true,
-      },
-
+      sizes: [productSizeSchema] // Usa el esquema de tamaño aquí
 });
 
 
