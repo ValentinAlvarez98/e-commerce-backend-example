@@ -21,6 +21,7 @@ import {
 import {
       AdministrationUserService
 } from "../administration/administration.users.services.js";
+import ValidationError from "../../errors/validationError.js";
 
 const adminService = new AdministrationUserService();
 
@@ -133,27 +134,37 @@ export class ClientUserService {
 
       async loginOne(email, password) {
 
-            const dbResponse = await DAOs.users.getOneByEmail(email);
+            try {
 
-            if (!dbResponse) {
+                  const dbResponse = await DAOs.users.getOneByEmail(email);
 
-                  throw {
-                        statusCode: 404,
-                        message: "Error al iniciar sesion",
-                        errors: ["El usuario no existe"],
+                  if (!dbResponse) {
+
+                        throw {
+                              statusCode: 404,
+                              message: "Error al iniciar sesion",
+                              errors: ["El usuario no existe"],
+                        }
+
                   }
 
-            }
+                  const isPasswordValid = await this.comparePassword(password, dbResponse.password);
 
-            const isPasswordValid = await this.comparePassword(password, dbResponse.password);
+                  const token = await this.generateToken(dbResponse._id);
 
-            const token = await this.generateToken(dbResponse._id);
 
-            const userUpdated = await this.updateActivity(dbResponse._id);
+                  const userUpdated = await this.updateActivity(dbResponse._id);
 
-            return {
-                  user: userUpdated,
-                  token
+                  return {
+                        user: userUpdated,
+                        token
+                  }
+            } catch (error) {
+
+                  console.log(error)
+
+                  throw error;
+
             }
 
       }

@@ -54,7 +54,11 @@ export class UsersDAO {
                         email
                   }).lean();
 
-                  if (!user) throw new ValidationError(["No se ha encontrado el usuario con el email ingresado"]);
+                  if (!user) throw {
+                        statusCode: 404,
+                        message: "Error al obtener el usuario",
+                        errors: ["El email ingresado no se encuentra registrado"]
+                  }
 
                   return user;
 
@@ -63,7 +67,7 @@ export class UsersDAO {
                   throw {
                         statusCode: 404,
                         message: "Error al obtener el usuario",
-                        errors: error
+                        errors: error.errors
                   }
 
             }

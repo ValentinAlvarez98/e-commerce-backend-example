@@ -18,7 +18,7 @@ export class MongoManager {
 
                   await mongoose.connect(MONGO_URL);
 
-                  console.log("Base de datos MongoDB, conectada");
+                  console.log("Base de datos MongoDB conectada");
 
             } catch (error) {
 
@@ -35,7 +35,7 @@ export class MongoManager {
                               sendErrorDBEmail(
                                     "Error al conectar con la base de datos",
                                     `El error ha sido: ${error}. Actualmente se está ejecutando el segundo intento de reconexión. Intentos restantes: ${retries}.`,
-                                    [`${CONFIG.MAIL.user}`, `${CONFIG.ADMIN.email}`]
+                                    [`${CONFIG.MAIL.user}`]
                               );
 
                         }

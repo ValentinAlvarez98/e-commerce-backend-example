@@ -75,12 +75,14 @@ export class ClientUsersController {
 
             } catch (error) {
 
+                  console.log(error);
+
                   // Esto no debería ser así, pero por ahora es lo que hay
                   const HTTP_STATUS = error.statusCode ? error.statusCode : 500;
 
                   const messageError = error.message ? error.message : "Error del servidor";
 
-                  const errorDescription = error.error ? error.error : "Error no especificado";
+                  const errorDescription = error.errors ? error.errors : "Error no especificado";
 
                   this.formattedErrorRes(res, HTTP_STATUS, messageError, errorDescription);
 

@@ -37,7 +37,7 @@ export class RedisManager {
 
       static async getClient() {
             if (!this.#instancePromise) {
-                  await this.start(); // Asegura que start se haya llamado
+                  await this.start();
             }
             return this.#instancePromise;
       }
