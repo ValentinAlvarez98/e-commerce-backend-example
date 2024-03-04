@@ -17,6 +17,14 @@ export async function configureRateLimiter() { // Asegúrate de exportar la func
             legacyHeaders: false, // deshabilita los encabezados 'X-RateLimit-*'
 
             // configurar el mensaje de error
-            message: 'Demasiadas solicitudes desde esta dirección IP, por favor, inténtelo de nuevo después de 15 minutos',
+            message: {
+                  status: 429,
+                  statusCode: 429,
+                  error: true,
+                  message: 'Exceso de solicitudes desde esta IP, intente nuevamente en 15 minutos.',
+                  errors: [
+                        'Se ha excedido el límite de solicitudes. Intente nuevamente en 15 minutos.'
+                  ]
+            },
       });
 }
