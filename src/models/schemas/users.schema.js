@@ -48,6 +48,9 @@ const usersSchema = new mongoose.Schema({
                         type: String,
                         required: [true, 'Contact name is required'],
                   },
+                  comentary: {
+                        type: String,
+                  }
             }],
             validate: [shippingLimit, '{PATH} exceeds the limit of 3'],
       },
