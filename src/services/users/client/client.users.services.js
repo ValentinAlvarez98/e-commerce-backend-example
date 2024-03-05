@@ -15,7 +15,8 @@ import {
 
 import {
       sendWelcomeEmail,
-      sendGoodbyeEmail
+      sendGoodbyeEmail,
+      sendWholeSaleEmail
 } from "../../../utils/mailing/mailing.utils.js";
 
 import {
@@ -164,6 +165,26 @@ export class ClientUserService {
                   console.log(error)
 
                   throw error;
+
+            }
+
+      }
+
+      async sendWholeSaleEmail(email, name, consult) {
+
+            try {
+
+                  const response = await sendWholeSaleEmail(email, name, consult);
+
+                  return response;
+
+            } catch (error) {
+
+                  throw {
+                        statusCode: 404,
+                        message: "Error al enviar el correo",
+                        errors: ["No se pudo enviar el correo"],
+                  }
 
             }
 

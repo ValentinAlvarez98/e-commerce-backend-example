@@ -111,6 +111,50 @@ export async function sendWelcomeEmail(email, userName) {
 
 }
 
+export async function sendWholeSaleEmail(email, name, consult) {
+
+
+      const HTML = `
+      <h1>Nueva solicitud de información de venta al por mayor</h1>
+      <div>
+              <h2>El usuario ${name} ha solicitado información sobre la venta al por mayor</h2>
+      </div>
+
+      <div>
+                  <p>El usuario ha dejado el siguiente mensaje:</p>
+      </div>
+
+      <div>
+
+                  <p>${consult}</p>
+
+      </div>
+
+      <div>
+                  <p> Comunicarse con el usuario al siguiente correo: ${email}</p>
+
+      </div>
+
+      `;
+
+      const mailOptions = {
+            from: MAIL.user,
+            to: CONFIG.ADMIN.email,
+            subject: `Nueva solicitud de información de venta al por mayor`,
+            html: HTML,
+      };
+
+      return new Promise((resolve, reject) => {
+            TRANSPORTER.sendMail(mailOptions, (error, info) => {
+                  if (error) {
+                        reject(error);
+                  } else {
+                        resolve(info);
+                  }
+            });
+      });
+}
+
 export async function sendGoodbyeEmail(email) {
 
       const HTML = `

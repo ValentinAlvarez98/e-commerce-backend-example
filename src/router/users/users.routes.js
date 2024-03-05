@@ -38,9 +38,10 @@ import {
       authFromCookieMiddleware as authFromCookie
 } from "../../middlewares/auth/auth.middleware.js";
 
+import newsletterRouter from "./newsletter/newsletter.users.routes.js";
+
 const adminController = new AdminController();
 const clientController = new ClientController();
-
 
 const usersRouter = Router();
 
@@ -65,6 +66,8 @@ usersRouter.get("/checkSession", authFromCookie, loadByJWT, clientController.che
 
 usersRouter.get("/logout", authFromCookie, clientController.logout.bind(clientController));
 
+usersRouter.post("/sendWholeSales", clientController.sendWholeSales.bind(clientController));
+
 usersRouter.put("/updateOne/basicInfo", validateBasicData, authMiddleware, loadByJWT, clientController.updateBasicInfo.bind(clientController));
 
 usersRouter.put("/updateOne/add/shipping_addresses", validateAddressData, authMiddleware, loadByJWT, limitShippingAddress, clientController.addAddressGeneric.bind(clientController));
@@ -74,8 +77,11 @@ usersRouter.put("/updateOne/add/billing_address", validateAddressData, authMiddl
 usersRouter.put("/updateOne/delete/:type/:aId", authMiddleware, loadByJWT, clientController.deleteAddressGeneric.bind(clientController));
 
 usersRouter.delete("/deleteOne", authMiddleware, clientController.deleteOne.bind(clientController));
-
 /* ------------------------- */
+
+/* Funciones de newsletter */
+/* ------------------------- */
+usersRouter.use("/newsletter", newsletterRouter);
 
 
 export default usersRouter;

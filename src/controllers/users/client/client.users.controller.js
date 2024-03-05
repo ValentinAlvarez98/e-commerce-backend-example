@@ -135,6 +135,28 @@ export class ClientUsersController {
 
       }
 
+      async sendWholeSales(req, res, next) {
+
+            try {
+
+                  const userName = req.body.name
+
+                  const userEmail = req.body.email
+
+                  const consult = req.body.consult
+
+                  const result = await clientService.sendWholeSaleEmail(userEmail, userName, consult);
+
+                  this.formattedSuccessRes(res, 200, `Correo enviado correctamente`, result);
+
+            } catch (error) {
+
+                  this.formattedErrorRes(res, error.statusCode, error.message, error.errors);
+
+            }
+
+      }
+
       async updateBasicInfo(req, res, next) {
 
             try {
