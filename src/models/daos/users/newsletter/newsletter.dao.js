@@ -134,4 +134,44 @@ export class NewsletterDAO {
 
       }
 
+      async updateIsSuscribed(email, status) {
+
+            try {
+
+                  const user = await NewsletterModel.findOneAndUpdate({
+                        email
+                  }, {
+                        is_subscribed: status
+                  }, {
+                        new: true
+                  });
+
+                  return user;
+
+            } catch (error) {
+
+                  throw error;
+
+            }
+
+      }
+
+      async deleteOne(email) {
+
+            try {
+
+                  const user = await NewsletterModel.findOneAndDelete({
+                        email
+                  });
+
+                  return user;
+
+            } catch (error) {
+
+                  throw error;
+
+            }
+
+      }
+
 }

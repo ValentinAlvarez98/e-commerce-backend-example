@@ -24,10 +24,14 @@ newsletterRouter.get("/getAll", newsletterController.getAll.bind(newsletterContr
 
 newsletterRouter.get("/getAllSuscribedEmails", newsletterController.getAllSuscribedEmails.bind(newsletterController));
 
+newsletterRouter.post("/sendEmail", newsletterController.sendEmail.bind(newsletterController));
+
 /* Funciones de cliente */
 /* ------------------------- */
 newsletterRouter.post("/suscribe/noRegisted", newsletterController.suscribeNoRegisted.bind(newsletterController));
 
 newsletterRouter.post("/suscribe/registed", authMiddleware, loadByJWT, newsletterController.suscribeRegisted.bind(newsletterController));
+
+newsletterRouter.put("/unsuscribe", authMiddleware, loadByJWT, newsletterController.unsuscribe.bind(newsletterController));
 
 export default newsletterRouter;

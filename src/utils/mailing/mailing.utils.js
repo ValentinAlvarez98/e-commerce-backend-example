@@ -195,6 +195,52 @@ export async function sendGoodbyeEmail(email) {
 
 }
 
+export async function sendNewsletter(email, title, subtitle, section, img, imgDescription, siteURL) {
+
+      const HTML = `
+      <div style="font-family: Arial, sans-serif; margin: 0; padding: 0; background-color: #f6f6f6; max-width: 600px; margin: 20px auto; background: #ffffff; border-radius: 8px; overflow: hidden; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);" >
+            <div style="background-color: #007bff; color: #ffffff; padding: 20px; text-align: center;">
+            <h1 style="margin: 0; font-size: 24px;"> ${title}</h1>
+            <p style="margin: 10px 0 0;"> ${subtitle} </p>
+            </div>
+            <div style="padding: 20px; text-align: left; color: #333333;" >
+            <h2 style="font-size: 20px;"> ${section.header} </h2>
+            <p> ${section.paragraph} </p>
+            <p> ${section.secondParagraph} </p>
+            <p style="text-align:center;">
+            <img src="${img}" alt="${imgDescription}" style="max-width:100%; height:auto;">
+      </p> 
+      <p> Para más información, visita nuestro
+      <a href="${siteURL}" style="color: #007bff; text-decoration: none;">
+      sitio web
+       </a>.
+       </p>
+            </div>
+            <div style="background-color: #eeeeee; padding: 10px 20px; text-align: center; font-size: 12px;">
+            <p> Síguenos en nuestras redes sociales para estar al día con las últimas novedades y ofertas. </p>
+            </div>
+            </div>
+      `
+
+      const mailOptions = {
+            from: MAIL.user,
+            to: email,
+            subject: title,
+            html: HTML,
+      };
+
+      return new Promise((resolve, reject) => {
+            TRANSPORTER.sendMail(mailOptions, (error, info) => {
+                  if (error) {
+                        reject(error);
+                  } else {
+                        resolve(info);
+                  }
+            });
+      });
+
+}
+
 
 
 export async function sendResetPassword(email, token) {
@@ -269,46 +315,6 @@ export async function sendResetPasswordConfirmation(email) {
             from: MAIL.user,
             to: email,
             subject: 'Recuperar contraseña',
-            html: HTML,
-      };
-
-      return new Promise((resolve, reject) => {
-            TRANSPORTER.sendMail(mailOptions, (error, info) => {
-                  if (error) {
-                        reject(error);
-                  } else {
-                        resolve(info);
-                  }
-            });
-      });
-
-}
-
-export async function sendDeletedProductEmail(email, product) {
-
-      const HTML = `
-      <h1>Producto eliminado</h1>
-      <div>
-          <h2>El producto ${product.title} ha sido eliminado</h2>
-      </div>
-      <div>
-              <p>El producto ya no esta disponible para la venta</p>
-      </div>
-
-      <div>
-                  <p>Saludos</p>
-      </div>
-
-      <div>
-                  <h3> Como siempre, gracias por confiar en nosotros</h3>
-      </div>
-
-      `;
-
-      const mailOptions = {
-            from: MAIL.user,
-            to: email,
-            subject: 'Producto eliminado',
             html: HTML,
       };
 

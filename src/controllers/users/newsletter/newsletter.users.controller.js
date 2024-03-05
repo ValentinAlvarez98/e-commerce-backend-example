@@ -67,6 +67,31 @@ export class NewsletterController {
 
       }
 
+      async sendEmail(req, res, next) {
+
+            try {
+
+                  const {
+                        title,
+                        subtitle,
+                        section,
+                        img,
+                        imgDescription,
+                        siteURL
+                  } = req.body;
+
+                  const result = await newsletterService.sendEmail(title, subtitle, section, img, imgDescription, siteURL);
+
+                  this.formattedSuccessRes(res, 200, `Email enviado correctamente`, result);
+
+            } catch (error) {
+
+                  this.formattedErrorRes(res, error.statusCode, error.message, error.errors);
+
+            }
+
+      }
+
       async suscribeNoRegisted(req, res, next) {
 
             try {
@@ -98,6 +123,26 @@ export class NewsletterController {
                   const result = await newsletterService.suscribeRegisted(userEmail, user_id);
 
                   this.formattedSuccessRes(res, 200, `Usuario suscrito correctamente`, result);
+
+            } catch (error) {
+
+                  this.formattedErrorRes(res, error.statusCode, error.message, error.errors);
+
+            }
+
+      }
+
+      async unsuscribe(req, res, next) {
+
+            try {
+
+                  const userEmail = req.user.email;
+
+                  req.user = null;
+
+                  const result = await newsletterService.unsuscribe(userEmail);
+
+                  this.formattedSuccessRes(res, 200, `Usuario desuscrito correctamente`, result);
 
             } catch (error) {
 
